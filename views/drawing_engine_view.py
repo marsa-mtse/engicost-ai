@@ -259,148 +259,374 @@ def _render_drawing_engine_internal():
                 st.plotly_chart(fig3d, use_container_width=True)
                 
             else:
-                # --- 2D Professional SVG (AutoCAD Style) ---
-                st.markdown(f"### 🖼️ " + t("مخطط أوتوكاد الشامل (V1.7.5 Pro)", "World-Class AutoCAD Plan (V1.7.5 Pro)"))
-                
-                bg_color = "#000000" if theme == "AutoCAD Dark" else "#0a3a66" if theme == "Blueprint" else "#f8f9fa"
-                line_color = "#ffffff" if theme != "Modern Light" else "#333333"
-                wall_fill = "url(#wallHatch)" if theme != "Modern Light" else "#e2e8f0"
-                wall_stroke = "#00ff00" if theme == "AutoCAD Dark" else "#ffffff" if theme == "Blueprint" else "#1e293b"
-                
-                # Element boundaries
-                w_list = r_data.get('walls', []) if isinstance(r_data.get('walls'), list) else []
-                o_list = r_data.get('openings', []) if isinstance(r_data.get('openings'), list) else []
-                f_list = r_data.get('furniture', []) if isinstance(r_data.get('furniture'), list) else []
-                all_w = w_list + o_list + f_list
-                
-                min_x = min([w.get('x',0) for w in all_w] + [0]) - 500
-                max_x = max([w.get('x',0)+w.get('w',0) for w in all_w] + [1200]) + 500
-                min_y = min([w.get('y',0) for w in all_w] + [0]) - 500
-                max_y = max([w.get('y',0)+w.get('h',0) for w in all_w] + [1200]) + 500
-                
-                # Responsive Viewbox
-                vb_w, vb_h = (max_x - min_x) / zoom_level, (max_y - min_y) / zoom_level
-                
-                svg = [f'<svg viewBox="{min_x} {min_y} {vb_w} {vb_h}" width="100%" height="auto" style="background:{bg_color}; border:2px solid {line_color}; border-radius:8px; display:block;" xmlns="http://www.w3.org/2000/svg">']
-                
-                # Defs (Hatch, Grid)
-                svg.append('<defs>')
-                svg.append(f'<pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="{line_color}" stroke-opacity="0.1" stroke-width="1"/></pattern>')
-                svg.append(f'<pattern id="wallHatch" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="10" stroke="{wall_stroke}" stroke-opacity="0.5" stroke-width="1" /></pattern>')
-                svg.append('</defs>')
-                svg.append(f'<rect x="{min_x}" y="{min_y}" width="{max_x-min_x}" height="{max_y-min_y}" fill="url(#grid)" />')
-                
-                # External Dimension Lines
-                svg.append(f'<g fill="none" stroke="{line_color}" stroke-width="1" stroke-opacity="0.6">')
-                # Top
-                svg.append(f'<line x1="{min_x+100}" y1="{min_y+50}" x2="{max_x-100}" y2="{min_y+50}" />')
-                svg.append(f'<line x1="{min_x+100}" y1="{min_y+40}" x2="{min_x+100}" y2="{min_y+60}" />')
-                svg.append(f'<line x1="{max_x-100}" y1="{min_y+40}" x2="{max_x-100}" y2="{min_y+60}" />')
-                svg.append(f'<circle cx="{min_x+100}" cy="{min_y+50}" r="2" fill="{line_color}"/>')
-                svg.append(f'<circle cx="{max_x-100}" cy="{min_y+50}" r="2" fill="{line_color}"/>')
-                svg.append(f'<text x="{(min_x+max_x)/2}" y="{min_y+40}" font-family="monospace" font-size="{20/zoom_level}" fill="{line_color}" stroke="none" text-anchor="middle">{max_x-min_x-200} cm</text>')
-                # Left
-                svg.append(f'<line x1="{min_x+50}" y1="{min_y+100}" x2="{min_x+50}" y2="{max_y-100}" />')
-                svg.append(f'<line x1="{min_x+40}" y1="{min_y+100}" x2="{min_x+60}" y2="{min_y+100}" />')
-                svg.append(f'<line x1="{min_x+40}" y1="{max_y-100}" x2="{min_x+60}" y2="{max_y-100}" />')
-                svg.append(f'<text x="{min_x+40}" y="{(min_y+max_y)/2}" font-family="monospace" font-size="{20/zoom_level}" fill="{line_color}" stroke="none" transform="rotate(-90 {min_x+40} {(min_y+max_y)/2})" text-anchor="middle">{max_y-min_y-200} cm</text>')
-                svg.append('</g>')
+                # ─── V3.0 World-Class 2D Architectural Plan ───────────────────────
+                st.markdown(f"### 🏛️ " + t("مسقط أفقي هندسي احترافي (V3.0 World-Class)", "Professional Architectural Floor Plan (V3.0)"))
 
-                # Topographic Contours (If Landscaping)
-                if t("لاندسكيب", "Landscaping") in specialty:
-                    svg.append(f'<g fill="none" stroke="#8b4513" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="10 5">')
-                    for i in range(1, 6):
-                        cx = min_x + (max_x - min_x) * 0.3 * i
-                        cy = min_y + (max_y - min_y) * 0.2 * i
-                        rx = (max_x - min_x) * 0.4 / i
-                        ry = (max_y - min_y) * 0.3 / i
-                        svg.append(f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" />')
-                        svg.append(f'<text x="{cx+rx}" y="{cy}" font-family="monospace" font-size="{12/zoom_level}" fill="#8b4513" text-anchor="middle">+{i*0.5}m</text>')
+                # === THEME COLORS ===
+                if theme == "AutoCAD Dark":
+                    bg_color, line_color = "#0d0d0d", "#e8e8e8"
+                    wall_fill_color, wall_stroke_col = "#2a2a2a", "#cccccc"
+                    dim_color, label_color = "#00d4ff", "#ffffff"
+                elif theme == "Blueprint":
+                    bg_color, line_color = "#0a2744", "#dce8f5"
+                    wall_fill_color, wall_stroke_col = "#1a3a5c", "#90c4e8"
+                    dim_color, label_color = "#ffdd57", "#ffffff"
+                else:  # Modern Light
+                    bg_color, line_color = "#f0f2f5", "#1a1a2e"
+                    wall_fill_color, wall_stroke_col = "#c8cdd6", "#1a1a2e"
+                    dim_color, label_color = "#1565c0", "#1a1a2e"
+
+                # === ROOM TYPE COLORS (professional fill palette) ===
+                ROOM_COLORS = {
+                    "bedroom": "#d4e8f5" if theme == "Modern Light" else "#1a3a52",
+                    "bathroom": "#d4f5f0" if theme == "Modern Light" else "#1a3d3a",
+                    "kitchen": "#fff3d4" if theme == "Modern Light" else "#3d3010",
+                    "living": "#f5f5d4" if theme == "Modern Light" else "#2d2d10",
+                    "corridor": "#e8e8e8" if theme == "Modern Light" else "#222222",
+                    "garage": "#e0ddd8" if theme == "Modern Light" else "#252015",
+                    "pool": "#b3e5fc" if theme == "Modern Light" else "#003355",
+                    "garden": "#c8e6c9" if theme == "Modern Light" else "#0a2d0a",
+                    "hall": "#eeddf5" if theme == "Modern Light" else "#2a1040",
+                    "office": "#e8f5e9" if theme == "Modern Light" else "#0d260d",
+                    "default": "#e8e8e8" if theme == "Modern Light" else "#1e1e2e",
+                }
+                ROOM_LABEL_COLORS = {
+                    "bedroom": "#0d47a1", "bathroom": "#006064", "kitchen": "#e65100",
+                    "living": "#558b2f", "corridor": "#444", "garage": "#5d4037",
+                    "pool": "#0277bd", "garden": "#2e7d32", "hall": "#6a1b9a",
+                    "office": "#1b5e20", "default": label_color,
+                }
+
+                # === ELEMENT BOUNDARIES ===
+                r_data = st.session_state.current_rooms
+                rooms_list = r_data.get('rooms', [])
+                w_list = r_data.get('walls', []) or []
+                o_list = r_data.get('openings', []) or []
+                f_list = r_data.get('furniture', []) or []
+                lbl_list = r_data.get('labels', []) or []
+                all_elements = w_list + o_list + f_list
+
+                if not all_elements:
+                    st.warning(t("لا توجد بيانات رسم. يرجى توليد مخطط أولاً.", "No drawing data. Please generate a plan first."))
+                else:
+                    min_x = min([e.get('x', 0) for e in all_elements] + [0])
+                    max_x = max([e.get('x', 0) + e.get('w', 0) for e in all_elements] + [1200])
+                    min_y = min([e.get('y', 0) for e in all_elements] + [0])
+                    max_y = max([e.get('y', 0) + e.get('h', 0) for e in all_elements] + [1200])
+
+                    # Padding for dimension lines
+                    PAD = max((max_x - min_x), (max_y - min_y)) * 0.18
+                    vb_x0 = min_x - PAD
+                    vb_y0 = min_y - PAD
+                    vb_w = (max_x - min_x + PAD * 2) / zoom_level
+                    vb_h = (max_y - min_y + PAD * 2) / zoom_level
+
+                    svg = [f'<svg viewBox="{vb_x0} {vb_y0} {vb_w} {vb_h}" width="100%" height="auto" '
+                           f'style="background:{bg_color}; border:3px solid {wall_stroke_col}; border-radius:10px; display:block; max-height:85vh;" '
+                           f'xmlns="http://www.w3.org/2000/svg">']
+
+                    # === DEFS: Patterns & Markers ===
+                    svg.append('<defs>')
+                    # Grid pattern
+                    grid_col = "#ffffff" if theme != "Modern Light" else "#000000"
+                    svg.append(f'<pattern id="grPt" width="100" height="100" patternUnits="userSpaceOnUse">'
+                               f'<path d="M 100 0 L 0 0 0 100" fill="none" stroke="{grid_col}" stroke-opacity="0.06" stroke-width="1"/>'
+                               f'</pattern>')
+                    # Wall concrete hatch (diagonal lines)
+                    svg.append(f'<pattern id="concreteHatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">'
+                               f'<line x1="0" y1="0" x2="0" y2="8" stroke="{wall_stroke_col}" stroke-opacity="0.5" stroke-width="2"/>'
+                               f'</pattern>')
+                    # Tile hatch (bathroom/kitchen)
+                    svg.append(f'<pattern id="tileHatch" width="30" height="30" patternUnits="userSpaceOnUse">'
+                               f'<rect x="0" y="0" width="29" height="29" fill="none" stroke="{line_color}" stroke-opacity="0.15" stroke-width="1"/>'
+                               f'<line x1="15" y1="0" x2="15" y2="30" stroke="{line_color}" stroke-opacity="0.08" stroke-width="0.5"/>'
+                               f'<line x1="0" y1="15" x2="30" y2="15" stroke="{line_color}" stroke-opacity="0.08" stroke-width="0.5"/>'
+                               f'</pattern>')
+                    # Dimension arrow markers
+                    svg.append(f'<marker id="arrowStart" markerWidth="8" markerHeight="8" refX="0" refY="3" orient="auto">'
+                               f'<path d="M8,0 L0,3 L8,6" fill="none" stroke="{dim_color}" stroke-width="1.5"/></marker>')
+                    svg.append(f'<marker id="arrowEnd" markerWidth="8" markerHeight="8" refX="8" refY="3" orient="auto">'
+                               f'<path d="M0,0 L8,3 L0,6" fill="none" stroke="{dim_color}" stroke-width="1.5"/></marker>')
+                    svg.append('</defs>')
+
+                    # Background + grid
+                    svg.append(f'<rect x="{vb_x0}" y="{vb_y0}" width="{vb_w}" height="{vb_h}" fill="{bg_color}"/>')
+                    svg.append(f'<rect x="{vb_x0}" y="{vb_y0}" width="{vb_w}" height="{vb_h}" fill="url(#grPt)"/>')
+
+                    # === LAYER 1: ROOM FILLS (color-coded by type) ===
+                    # Each room from the rooms list gets a colored fill
+                    for room in rooms_list:
+                        rx = float(room.get('x_m', room.get('x', 0))) * 100
+                        ry = float(room.get('y_m', room.get('y', 0))) * 100
+                        rw = float(room.get('width_m', room.get('w', 4))) * 100
+                        rh = float(room.get('height_m', room.get('h', 4))) * 100
+                        rtype = str(room.get('type', 'default')).lower()
+
+                        # Determine room color
+                        fill_c = ROOM_COLORS.get(rtype, ROOM_COLORS['default'])
+                        for key in ROOM_COLORS:
+                            if key in rtype:
+                                fill_c = ROOM_COLORS[key]
+                                break
+
+                        # Determine fill pattern
+                        fill_pattern = "none"
+                        if "bathroom" in rtype or "toilet" in rtype or "حمام" in rtype:
+                            fill_pattern = "url(#tileHatch)"
+                        elif "kitchen" in rtype or "مطبخ" in rtype:
+                            fill_pattern = "url(#tileHatch)"
+
+                        svg.append(f'<rect x="{rx}" y="{ry}" width="{rw}" height="{rh}" '
+                                   f'fill="{fill_c}" fill-opacity="0.9" rx="0"/>')
+                        if fill_pattern != "none":
+                            svg.append(f'<rect x="{rx}" y="{ry}" width="{rw}" height="{rh}" '
+                                       f'fill="{fill_pattern}" fill-opacity="0.6"/>')
+
+                    # === LAYER 2: LANDSCAPE / POOL / FURNITURE ===
+                    for f in f_list:
+                        fx, fy, fw, fh = f.get('x', 0), f.get('y', 0), max(f.get('w', 50), 20), max(f.get('h', 50), 20)
+                        fname = f.get('name', '')
+                        ftype = str(f.get('type', '')).lower()
+                        fs = max(16 / zoom_level, 8)
+
+                        if 'pool' in ftype or 'water' in ftype:
+                            # Realistic pool with lane lines
+                            svg.append(f'<rect x="{fx}" y="{fy}" width="{fw}" height="{fh}" fill="#0288d1" fill-opacity="0.6" stroke="#01579b" stroke-width="4" rx="20"/>')
+                            svg.append(f'<rect x="{fx+8}" y="{fy+8}" width="{fw-16}" height="{fh-16}" fill="none" stroke="#29b6f6" stroke-width="2" rx="15" stroke-dasharray="20 10"/>')
+                            svg.append(f'<text x="{fx+fw/2}" y="{fy+fh/2}" font-family="Arial" font-size="{fs}" fill="#e1f5fe" text-anchor="middle" dominant-baseline="middle" font-weight="bold">{fname}</text>')
+                        elif 'green' in ftype or 'land' in ftype or 'garden' in ftype:
+                            # Garden with tree symbols
+                            svg.append(f'<rect x="{fx}" y="{fy}" width="{fw}" height="{fh}" fill="#2e7d32" fill-opacity="0.25" stroke="#388e3c" stroke-width="3" stroke-dasharray="15 5" rx="8"/>')
+                            # Draw tree circles in a grid
+                            tree_spacing = max(fw, fh) / 4
+                            for ti in range(3):
+                                for tj in range(3):
+                                    tx = fx + tree_spacing * (ti + 0.5)
+                                    ty = fy + tree_spacing * (tj + 0.5)
+                                    if tx < fx + fw - 20 and ty < fy + fh - 20:
+                                        tr = tree_spacing * 0.3
+                                        svg.append(f'<circle cx="{tx}" cy="{ty}" r="{tr}" fill="#43a047" fill-opacity="0.6" stroke="#2e7d32" stroke-width="2"/>')
+                                        svg.append(f'<circle cx="{tx}" cy="{ty}" r="{tr*0.4}" fill="#1b5e20" fill-opacity="0.8"/>')
+                            svg.append(f'<text x="{fx+fw/2}" y="{fy+fh/2}" font-family="Arial" font-size="{fs}" fill="#1b5e20" text-anchor="middle" dominant-baseline="middle" font-weight="bold">{fname}</text>')
+                        elif 'car' in ftype or 'park' in ftype or 'garage' in ftype:
+                            svg.append(f'<rect x="{fx}" y="{fy}" width="{fw}" height="{fh}" fill="#90a4ae" fill-opacity="0.2" stroke="#607d8b" stroke-width="2" stroke-dasharray="10 5"/>')
+                            svg.append(f'<text x="{fx+fw/2}" y="{fy+fh/2}" font-family="Arial" font-size="{fs}" fill="{label_color}" text-anchor="middle" dominant-baseline="middle">{fname}</text>')
+                        elif 'bed' in ftype or 'نوم' in fname:
+                            # Bed symbol
+                            bw, bh = min(fw * 0.6, 160), min(fh * 0.5, 200)
+                            bx, by = fx + fw/2 - bw/2, fy + fh/2 - bh/2
+                            svg.append(f'<rect x="{bx}" y="{by}" width="{bw}" height="{bh}" fill="#90caf9" fill-opacity="0.4" stroke="#42a5f5" stroke-width="2" rx="8"/>')
+                            svg.append(f'<rect x="{bx}" y="{by}" width="{bw}" height="{bh*0.25}" fill="#e3f2fd" fill-opacity="0.6" stroke="none" rx="4"/>')  # pillow
+                            svg.append(f'<text x="{fx+fw/2}" y="{fy+fh*0.85}" font-family="Arial" font-size="{fs*0.8}" fill="{label_color}" text-anchor="middle" opacity="0.6">{fname}</text>')
+                        elif 'kitchen' in ftype or 'مطبخ' in fname:
+                            # Counter L-shape
+                            counter_d = min(fw, fh) * 0.18
+                            svg.append(f'<rect x="{fx}" y="{fy}" width="{fw}" height="{counter_d}" fill="#ffcc80" fill-opacity="0.5" stroke="#ef6c00" stroke-width="2"/>')
+                            svg.append(f'<rect x="{fx}" y="{fy}" width="{counter_d}" height="{fh}" fill="#ffcc80" fill-opacity="0.5" stroke="#ef6c00" stroke-width="2"/>')
+                        elif 'bath' in ftype or 'toilet' in ftype or 'حمام' in fname:
+                            # Toilet + tub symbols
+                            svg.append(f'<ellipse cx="{fx+fw*0.3}" cy="{fy+fh*0.7}" rx="{fw*0.18}" ry="{fh*0.22}" fill="#b2ebf2" fill-opacity="0.6" stroke="#00acc1" stroke-width="2"/>')
+                            svg.append(f'<rect x="{fx+fw*0.12}" y="{fy+fh*0.55}" width="{fw*0.36}" height="{fh*0.15}" fill="#80deea" fill-opacity="0.6" stroke="#00acc1" stroke-width="1.5" rx="3"/>')
+                        else:
+                            if fname:
+                                svg.append(f'<rect x="{fx}" y="{fy}" width="{fw}" height="{fh}" fill="{line_color}" fill-opacity="0.04" stroke="{line_color}" stroke-opacity="0.3" stroke-width="1.5" stroke-dasharray="8 4" rx="4"/>')
+                                svg.append(f'<text x="{fx+fw/2}" y="{fy+fh/2}" font-family="Arial" font-size="{fs*0.8}" fill="{label_color}" text-anchor="middle" dominant-baseline="middle" opacity="0.7">{fname}</text>')
+
+                    # === LAYER 3: WALLS (double-line with concrete fill) ===
+                    for w in w_list:
+                        wx, wy = w.get('x', 0), w.get('y', 0)
+                        ww, wh = max(w.get('w', 20), 8), max(w.get('h', 20), 8)
+                        is_ext = w.get('is_exterior', False)
+                        s_width = "4" if is_ext else "2.5"
+                        # Concrete-filled wall
+                        svg.append(f'<rect x="{wx}" y="{wy}" width="{ww}" height="{wh}" '
+                                   f'fill="url(#concreteHatch)" stroke="{wall_stroke_col}" stroke-width="{s_width}"/>')
+
+                    # === LAYER 4: OPENINGS (doors with swing arcs + windows with triple lines) ===
+                    import math
+                    for o in o_list:
+                        ox, oy = o.get('x', 0), o.get('y', 0)
+                        ow, oh = max(o.get('w', 20), 8), max(o.get('h', 20), 8)
+                        otype = str(o.get('type', '')).lower()
+                        swing_angle = o.get('swing', 90)
+
+                        if 'door' in otype:
+                            # Clear the wall gap (with bg color)
+                            svg.append(f'<rect x="{ox}" y="{oy}" width="{ow}" height="{oh}" fill="{bg_color}"/>')
+                            # Determine orientation
+                            is_horiz = ow >= oh
+                            door_len = ow if is_horiz else oh
+
+                            if is_horiz:
+                                # Door leaf: line across
+                                svg.append(f'<line x1="{ox}" y1="{oy+oh/2}" x2="{ox+door_len}" y2="{oy+oh/2}" '
+                                           f'stroke="#ffd54f" stroke-width="3" stroke-linecap="round"/>')
+                                # 90° swing arc
+                                svg.append(f'<path d="M {ox} {oy+oh/2} A {door_len} {door_len} 0 0 1 {ox+door_len} {oy+oh/2+door_len}" '
+                                           f'fill="none" stroke="#ffd54f" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.8"/>')
+                                # Hinge dot
+                                svg.append(f'<circle cx="{ox}" cy="{oy+oh/2}" r="4" fill="#ffd54f" opacity="0.9"/>')
+                            else:
+                                # Vertical wall door
+                                svg.append(f'<line x1="{ox+ow/2}" y1="{oy}" x2="{ox+ow/2}" y2="{oy+door_len}" '
+                                           f'stroke="#ffd54f" stroke-width="3" stroke-linecap="round"/>')
+                                svg.append(f'<path d="M {ox+ow/2} {oy} A {door_len} {door_len} 0 0 1 {ox+ow/2+door_len} {oy+door_len}" '
+                                           f'fill="none" stroke="#ffd54f" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.8"/>')
+                                svg.append(f'<circle cx="{ox+ow/2}" cy="{oy}" r="4" fill="#ffd54f" opacity="0.9"/>')
+
+                        else:  # Window
+                            # Clear wall gap
+                            svg.append(f'<rect x="{ox}" y="{oy}" width="{ow}" height="{oh}" fill="{bg_color}"/>')
+                            wc = "#4dd0e1"
+                            is_horiz = ow >= oh
+                            if is_horiz:
+                                mid = oy + oh / 2
+                                # Triple line window symbol (architectural standard)
+                                svg.append(f'<line x1="{ox}" y1="{oy+2}" x2="{ox+ow}" y2="{oy+2}" stroke="{wc}" stroke-width="2.5"/>')
+                                svg.append(f'<line x1="{ox}" y1="{mid}" x2="{ox+ow}" y2="{mid}" stroke="{wc}" stroke-width="2" stroke-dasharray="15 0"/>')
+                                svg.append(f'<line x1="{ox}" y1="{oy+oh-2}" x2="{ox+ow}" y2="{oy+oh-2}" stroke="{wc}" stroke-width="2.5"/>')
+                                # Glass shine effect
+                                svg.append(f'<rect x="{ox}" y="{oy}" width="{ow}" height="{oh}" fill="{wc}" fill-opacity="0.08"/>')
+                            else:
+                                mid = ox + ow / 2
+                                svg.append(f'<line x1="{ox+2}" y1="{oy}" x2="{ox+2}" y2="{oy+oh}" stroke="{wc}" stroke-width="2.5"/>')
+                                svg.append(f'<line x1="{mid}" y1="{oy}" x2="{mid}" y2="{oy+oh}" stroke="{wc}" stroke-width="2"/>')
+                                svg.append(f'<line x1="{ox+ow-2}" y1="{oy}" x2="{ox+ow-2}" y2="{oy+oh}" stroke="{wc}" stroke-width="2.5"/>')
+                                svg.append(f'<rect x="{ox}" y="{oy}" width="{ow}" height="{oh}" fill="{wc}" fill-opacity="0.08"/>')
+
+                    # === LAYER 5: ROOM LABELS AND DIMENSIONS ===
+                    WALL_T = 20  # average wall thickness in cm
+                    for lbl in lbl_list:
+                        lx, ly = lbl.get('x', 0), lbl.get('y', 0)
+                        txt = lbl.get('text', '')
+                        area = lbl.get('area_m2', '')
+                        fs_lbl = max(22 / zoom_level, 10)
+                        fs_area = max(16 / zoom_level, 8)
+
+                        # Determine room type color for label
+                        lbl_col = label_color
+                        for key, col in ROOM_LABEL_COLORS.items():
+                            if key in txt.lower():
+                                lbl_col = col
+                                break
+
+                        # Room name with shadow-like effect
+                        svg.append(f'<text x="{lx+1}" y="{ly-8}" font-family="Arial" font-weight="800" '
+                                   f'font-size="{fs_lbl}" fill="#000000" fill-opacity="0.3" text-anchor="middle">{txt}</text>')
+                        svg.append(f'<text x="{lx}" y="{ly-9}" font-family="Arial" font-weight="800" '
+                                   f'font-size="{fs_lbl}" fill="{lbl_col}" text-anchor="middle">{txt}</text>')
+                        if area:
+                            svg.append(f'<text x="{lx}" y="{ly+fs_lbl*0.6}" font-family="monospace" '
+                                       f'font-size="{fs_area}" fill="{lbl_col}" fill-opacity="0.75" text-anchor="middle">{area} m²</text>')
+
+                    # === LAYER 6: PROFESSIONAL DIMENSION LINES ===
+                    doff = PAD * 0.45  # offset from building edge
+                    ds = max(16 / zoom_level, 7)
+                    total_w_m = round((max_x - min_x) / 100, 1)
+                    total_h_m = round((max_y - min_y) / 100, 1)
+
+                    # Top horizontal dimension
+                    dy_top = min_y - doff
+                    svg.append(f'<g stroke="{dim_color}" fill="{dim_color}">')
+                    svg.append(f'<line x1="{min_x}" y1="{dy_top}" x2="{max_x}" y2="{dy_top}" stroke-width="2" '
+                               f'marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)"/>')
+                    svg.append(f'<line x1="{min_x}" y1="{min_y - doff*0.2}" x2="{min_x}" y2="{dy_top + doff*0.2}" stroke-width="1.5"/>')
+                    svg.append(f'<line x1="{max_x}" y1="{min_y - doff*0.2}" x2="{max_x}" y2="{dy_top + doff*0.2}" stroke-width="1.5"/>')
+                    svg.append(f'<rect x="{(min_x+max_x)/2 - ds*2.5}" y="{dy_top - ds*1.2}" width="{ds*5}" height="{ds*1.5}" fill="{bg_color}" rx="2"/>')
+                    svg.append(f'<text x="{(min_x+max_x)/2}" y="{dy_top - ds*0.1}" font-family="Arial" font-size="{ds}" '
+                               f'fill="{dim_color}" text-anchor="middle" font-weight="bold">{total_w_m} م</text>')
                     svg.append('</g>')
 
-                # Furniture/Greenery
-                for f in r_data.get('furniture', []):
-                    fx, fy, fw, fh = f.get('x',0), f.get('y',0), f.get('w',50), f.get('h',50)
-                    fname = f.get('name', '')
-                    ftype = str(f.get('type', '')).lower()
-                    if 'pool' in ftype or 'water' in ftype:
-                        svg.append(f'<rect x="{fx}" y="{fy}" width="{fw}" height="{fh}" fill="#2196f3" fill-opacity="0.3" stroke="#2196f3" stroke-width="2" rx="10"/>')
-                    elif 'tree' in ftype or 'green' in ftype or 'land' in ftype:
-                        cx, cy, r = fx+fw/2, fy+fh/2, min(fw,fh)/2
-                        svg.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="#4caf50" fill-opacity="0.3" stroke="#4caf50" stroke-width="2" stroke-dasharray="4 2"/>')
-                    else:
-                        svg.append(f'<rect x="{fx}" y="{fy}" width="{fw}" height="{fh}" fill="{line_color}" fill-opacity="0.05" stroke="{line_color}" stroke-opacity="0.4" stroke-width="1.5" rx="4"/>')
-                    svg.append(f'<text x="{fx+fw/2}" y="{fy+fh/2}" font-family="sans-serif" font-size="{12/zoom_level}" fill="{line_color}" fill-opacity="0.7" text-anchor="middle" dominant-baseline="middle">{fname}</text>')
-                
-                # Walls (rendered with hatch and stroke)
-                for w in r_data.get('walls', []):
-                    wx, wy, ww, wh = w.get('x',0), w.get('y',0), max(w.get('w',10),10), max(w.get('h',10),10)
-                    is_ext = w.get('is_exterior', False)
-                    stroke_w = "3.5" if is_ext else "2"
-                    svg.append(f'<rect x="{wx}" y="{wy}" width="{ww}" height="{wh}" fill="{wall_fill}" stroke="{wall_stroke}" stroke-width="{stroke_w}" />')
+                    # Left vertical dimension
+                    dx_left = min_x - doff
+                    svg.append(f'<g stroke="{dim_color}" fill="{dim_color}">')
+                    svg.append(f'<line x1="{dx_left}" y1="{min_y}" x2="{dx_left}" y2="{max_y}" stroke-width="2" '
+                               f'marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)"/>')
+                    svg.append(f'<line x1="{min_x - doff*0.2}" y1="{min_y}" x2="{dx_left + doff*0.2}" y2="{min_y}" stroke-width="1.5"/>')
+                    svg.append(f'<line x1="{min_x - doff*0.2}" y1="{max_y}" x2="{dx_left + doff*0.2}" y2="{max_y}" stroke-width="1.5"/>')
+                    mid_yr = (min_y + max_y) / 2
+                    svg.append(f'<rect x="{dx_left - ds*1.5}" y="{mid_yr - ds*2.5}" width="{ds*5}" height="{ds*1.5}" fill="{bg_color}" rx="2" '
+                               f'transform="rotate(-90 {dx_left} {mid_yr})"/>')
+                    svg.append(f'<text x="{dx_left - ds*0.5}" y="{mid_yr}" font-family="Arial" font-size="{ds}" '
+                               f'fill="{dim_color}" text-anchor="middle" font-weight="bold" '
+                               f'transform="rotate(-90 {dx_left-ds*0.5} {mid_yr})">{total_h_m} م</text>')
+                    svg.append('</g>')
 
-                # Openings — Professional door arcs + window panes
-                for o in r_data.get('openings', []):
-                    ox, oy, ow, oh = o.get('x',0), o.get('y',0), max(o.get('w',20),10), max(o.get('h',20),10)
-                    otype = str(o.get('type','')).lower()
-                    if 'door' in otype:
-                        # Clear wall gap
-                        svg.append(f'<rect x="{ox}" y="{oy}" width="{ow}" height="{oh}" fill="{bg_color}" stroke="none" />')
-                        # Door leaf (thin line)
-                        if ow >= oh:  # Horizontal wall
-                            svg.append(f'<line x1="{ox}" y1="{oy+oh/2}" x2="{ox+ow}" y2="{oy+oh/2}" stroke="#ffeb3b" stroke-width="2"/>')
-                            svg.append(f'<path d="M {ox} {oy+oh/2} A {ow} {ow} 0 0 1 {ox+ow} {oy+oh/2+ow}" fill="none" stroke="#ffeb3b" stroke-width="1.5" stroke-dasharray="6,3"/>')
-                        else:  # Vertical wall
-                            svg.append(f'<line x1="{ox+ow/2}" y1="{oy}" x2="{ox+ow/2}" y2="{oy+oh}" stroke="#ffeb3b" stroke-width="2"/>')
-                            svg.append(f'<path d="M {ox+ow/2} {oy} A {oh} {oh} 0 0 1 {ox+ow/2+oh} {oy+oh}" fill="none" stroke="#ffeb3b" stroke-width="1.5" stroke-dasharray="6,3"/>')
-                    else:
-                        # Window: clear gap + double parallel lines + crosses
-                        svg.append(f'<rect x="{ox}" y="{oy}" width="{ow}" height="{oh}" fill="{bg_color}" stroke="none" />')
-                        svg.append(f'<rect x="{ox}" y="{oy}" width="{ow}" height="{oh}" fill="none" stroke="#00bcd4" stroke-width="2" />')
-                        if ow >= oh:
-                            mid = oy + oh/2
-                            svg.append(f'<line x1="{ox}" y1="{mid-3}" x2="{ox+ow}" y2="{mid-3}" stroke="#00bcd4" stroke-width="1.5"/>')
-                            svg.append(f'<line x1="{ox}" y1="{mid+3}" x2="{ox+ow}" y2="{mid+3}" stroke="#00bcd4" stroke-width="1.5"/>')
-                        else:
-                            mid = ox + ow/2
-                            svg.append(f'<line x1="{mid-3}" y1="{oy}" x2="{mid-3}" y2="{oy+oh}" stroke="#00bcd4" stroke-width="1.5"/>')
-                            svg.append(f'<line x1="{mid+3}" y1="{oy}" x2="{mid+3}" y2="{oy+oh}" stroke="#00bcd4" stroke-width="1.5"/>')
+                    # Per-room dimension labels (inside room, small)
+                    for room in rooms_list:
+                        rx = float(room.get('x_m', room.get('x', 0))) * 100
+                        ry = float(room.get('y_m', room.get('y', 0))) * 100
+                        rw = float(room.get('width_m', room.get('w', 4))) * 100
+                        rh = float(room.get('height_m', room.get('h', 4))) * 100
+                        w_m = round(rw / 100, 1)
+                        h_m = round(rh / 100, 1)
+                        fs_d = max(11 / zoom_level, 6)
+                        # Small width dim at top of room
+                        svg.append(f'<text x="{rx+rw/2}" y="{ry+fs_d*1.5}" font-family="monospace" font-size="{fs_d}" '
+                                   f'fill="{dim_color}" text-anchor="middle" opacity="0.7">{w_m}م</text>')
+                        # Small height dim at left of room (rotated)
+                        svg.append(f'<text x="{rx+fs_d*1.5}" y="{ry+rh/2}" font-family="monospace" font-size="{fs_d}" '
+                                   f'fill="{dim_color}" text-anchor="middle" opacity="0.7" '
+                                   f'transform="rotate(-90 {rx+fs_d*1.5} {ry+rh/2})">{h_m}م</text>')
 
-                # Room Labels with area (m²)
-                for lbl in r_data.get('labels', []):
-                    lx, ly, txt = lbl.get('x',0), lbl.get('y',0), lbl.get('text', '')
-                    area = lbl.get('area_m2', '')
-                    svg.append(f'<text x="{lx}" y="{ly - 10}" font-family="sans-serif" font-weight="bold" font-size="{22/zoom_level}" fill="{wall_stroke}" text-anchor="middle">{txt}</text>')
-                    if area:
-                        svg.append(f'<text x="{lx}" y="{ly + 14}" font-family="monospace" font-size="{16/zoom_level}" fill="{wall_stroke}" fill-opacity="0.65" text-anchor="middle">{area} m²</text>')
+                    # === LAYER 7: NORTH ARROW ===
+                    na_x, na_y, na_r = vb_x0 + vb_w * 0.06, vb_y0 + vb_h * 0.07, vb_w * 0.025
+                    svg.append(f'<g transform="translate({na_x},{na_y})">')
+                    svg.append(f'<circle r="{na_r}" fill="{bg_color}" stroke="{line_color}" stroke-width="2" opacity="0.9"/>')
+                    svg.append(f'<polygon points="0,{-na_r*0.85} {na_r*0.3},0 0,{na_r*0.3}" fill="{dim_color}" opacity="0.95"/>')
+                    svg.append(f'<polygon points="0,{-na_r*0.85} {-na_r*0.3},0 0,{na_r*0.3}" fill="{line_color}" fill-opacity="0.5"/>')
+                    svg.append(f'<text y="{-na_r*1.25}" font-family="Arial Black" font-size="{na_r*0.7}" fill="{dim_color}" text-anchor="middle" font-weight="900">N</text>')
+                    svg.append('</g>')
 
-                # Professional Title Block
-                tb_w, tb_h = 300, 120
-                tb_x, tb_y = max_x - tb_w - 20, max_y - tb_h - 20
-                svg.append(f'<g transform="translate({tb_x}, {tb_y})">')
-                svg.append(f'<rect x="0" y="0" width="{tb_w}" height="{tb_h}" fill="{bg_color}" fill-opacity="0.9" stroke="{line_color}" stroke-width="3"/>')
-                svg.append(f'<line x1="0" y1="40" x2="{tb_w}" y2="40" stroke="{line_color}" stroke-width="1.5"/>')
-                svg.append(f'<line x1="0" y1="80" x2="{tb_w}" y2="80" stroke="{line_color}" stroke-width="1.5"/>')
-                svg.append(f'<line x1="{tb_w/2}" y1="40" x2="{tb_w/2}" y2="120" stroke="{line_color}" stroke-width="1.5"/>')
-                svg.append(f'<text x="15" y="26" font-family="sans-serif" font-size="{18/zoom_level}" fill="{line_color}" font-weight="900" letter-spacing="2">ENGICOST AI V1.7.5 PRO</text>')
-                svg.append(f'<text x="15" y="66" font-family="sans-serif" font-size="{14/zoom_level}" fill="{line_color}">Style: {style_3d[:15]}</text>')
-                svg.append(f'<text x="{tb_w/2 + 15}" y="66" font-family="sans-serif" font-size="{14/zoom_level}" fill="{line_color}">Floors: {floor_count}</text>')
-                svg.append(f'<text x="15" y="106" font-family="sans-serif" font-size="{14/zoom_level}" fill="{line_color}">Rooms: {bed_count}B/{bath_count}H</text>')
-                svg.append(f'<text x="{tb_w/2 + 15}" y="106" font-family="sans-serif" font-size="{14/zoom_level}" fill="{line_color}">V: Ultra Pro</text>')
-                svg.append(f'</g>')
-                
-                svg.append('</svg>')
-                final_svg = "\n".join(svg)
-                st.session_state.last_svg = final_svg
-                
-                # Use HTML component for better rendering of raw SVG
-                import streamlit.components.v1 as components
-                components.html(final_svg, height=max(600, int(vb_h * zoom_level * 0.8)), scrolling=True)
-                
-                # --- EXPORT AND INTEGRATION BUTTONS ---
-                col_dxf, col_svg, col_pdf, col_boq = st.columns([1, 1, 1, 1.5])
-                with col_svg:
-                    st.download_button(t("📥 SVG", "SVG"), data=final_svg, file_name="engi_plan.svg", mime="image/svg+xml", use_container_width=True)
+                    # === LAYER 8: SCALE BAR ===
+                    scale_w_m = max(5, int(total_w_m / 4))
+                    scale_px = scale_w_m * 100
+                    sb_x = max_x + PAD * 0.05
+                    sb_y = max_y + PAD * 0.3
+                    sb_seg = scale_px / 5
+                    svg.append(f'<g stroke="{line_color}" fill="{line_color}">')
+                    for si in range(5):
+                        seg_fill = line_color if si % 2 == 0 else bg_color
+                        svg.append(f'<rect x="{sb_x + si*sb_seg}" y="{sb_y}" width="{sb_seg}" height="{scale_px*0.06}" '
+                                   f'fill="{seg_fill}" stroke="{line_color}" stroke-width="1.5"/>')
+                    svg.append(f'<text x="{sb_x}" y="{sb_y - 8}" font-family="monospace" font-size="{ds}" fill="{line_color}" text-anchor="start">0</text>')
+                    svg.append(f'<text x="{sb_x + scale_px}" y="{sb_y - 8}" font-family="monospace" font-size="{ds}" fill="{line_color}" text-anchor="end">{scale_w_m}م</text>')
+                    svg.append(f'<text x="{sb_x + scale_px/2}" y="{sb_y + scale_px*0.06 + ds*1.3}" font-family="monospace" font-size="{ds*0.85}" fill="{line_color}" text-anchor="middle" opacity="0.7">مقياس رسم 1:100</text>')
+                    svg.append('</g>')
+
+                    # === LAYER 9: PROFESSIONAL TITLE BLOCK ===
+                    proj_info = r_data.get('project_info', {})
+                    proj_title = proj_info.get('title', t('مشروع سكني', 'Residential Project'))
+                    proj_style = proj_info.get('style', style_3d)
+                    total_area = proj_info.get('total_area', round(total_w_m * total_h_m, 0))
+                    tb_w = vb_w * 0.25
+                    tb_h = vb_h * 0.15
+                    tb_x = vb_x0 + vb_w - tb_w - vb_w * 0.01
+                    tb_y = vb_y0 + vb_h - tb_h - vb_h * 0.01
+                    tfs = max(ds * 0.85, 6)
+                    svg.append(f'<rect x="{tb_x}" y="{tb_y}" width="{tb_w}" height="{tb_h}" fill="{bg_color}" fill-opacity="0.95" stroke="{wall_stroke_col}" stroke-width="3"/>')
+                    svg.append(f'<line x1="{tb_x}" y1="{tb_y + tb_h*0.28}" x2="{tb_x+tb_w}" y2="{tb_y + tb_h*0.28}" stroke="{line_color}" stroke-width="2.5"/>')
+                    svg.append(f'<line x1="{tb_x}" y1="{tb_y + tb_h*0.60}" x2="{tb_x+tb_w}" y2="{tb_y + tb_h*0.60}" stroke="{line_color}" stroke-width="1.5"/>')
+                    svg.append(f'<line x1="{tb_x + tb_w*0.5}" y1="{tb_y + tb_h*0.28}" x2="{tb_x + tb_w*0.5}" y2="{tb_y + tb_h}" stroke="{line_color}" stroke-width="1.5"/>')
+                    svg.append(f'<text x="{tb_x + tb_w/2}" y="{tb_y + tb_h*0.2}" font-family="Arial Black" font-size="{tfs*1.2}" fill="{dim_color}" text-anchor="middle" font-weight="900" letter-spacing="1">EngiCost AI V3.0 PRO 🏆</text>')
+                    svg.append(f'<text x="{tb_x + tb_w*0.25}" y="{tb_y + tb_h*0.47}" font-family="Arial" font-size="{tfs}" fill="{line_color}" text-anchor="middle">{proj_title[:20]}</text>')
+                    svg.append(f'<text x="{tb_x + tb_w*0.75}" y="{tb_y + tb_h*0.47}" font-family="Arial" font-size="{tfs}" fill="{line_color}" text-anchor="middle">{proj_style[:15]}</text>')
+                    svg.append(f'<text x="{tb_x + tb_w*0.25}" y="{tb_y + tb_h*0.78}" font-family="Arial" font-size="{tfs}" fill="{line_color}" text-anchor="middle">{bed_count} نوم / {bath_count} حمام</text>')
+                    svg.append(f'<text x="{tb_x + tb_w*0.75}" y="{tb_y + tb_h*0.78}" font-family="Arial" font-size="{tfs}" fill="{line_color}" text-anchor="middle">مساحة: {total_area} م²</text>')
+                    svg.append(f'<text x="{tb_x + tb_w/2}" y="{tb_y + tb_h*0.95}" font-family="monospace" font-size="{tfs*0.75}" fill="{line_color}" fill-opacity="0.55" text-anchor="middle">المساقط الأفقية — مقياس 1:100</text>')
+
+                    svg.append('</svg>')
+                    final_svg = "\n".join(svg)
+                    st.session_state.last_svg = final_svg
+
+                    import streamlit.components.v1 as components
+                    components.html(final_svg, height=max(700, int(vb_h * zoom_level * 0.55)), scrolling=True)
+
+                    # --- EXPORT AND INTEGRATION BUTTONS ---
+                    col_dxf, col_svg, col_pdf, col_boq = st.columns([1, 1, 1, 1.5])
+                    with col_svg:
+                        st.download_button(t("📥 SVG", "SVG"), data=final_svg, file_name="engi_plan.svg", mime="image/svg+xml", use_container_width=True)
+
                 
                 with col_dxf:
                     try:
