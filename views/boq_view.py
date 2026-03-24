@@ -149,14 +149,21 @@ def render_boq_pricing():
                             rate = market_data.get('rate', 1.0)
                             prices = market_data.get('prices', {})
                             
-                            # Find actual column names (handle casing)
+                            # Find actual column names (handle casing and Arabic variants)
                             cols = df.columns.tolist()
-                            desc_col = next((c for c in cols if c.lower() == 'description'), None)
-                            unit_col = next((c for c in cols if c.lower() == 'unit'), None)
+                            DESC_ALIASES = ['description', 'item', 'item_name', 'name', 'title',
+                                            'work', 'بند', 'وصف', 'البند', 'الوصف', 'اسم_البند', 'اسم']
+                            UNIT_ALIASES = ['unit', 'وحدة', 'الوحدة', 'unit_type']
+                            
+                            desc_col = next((c for c in cols if c.lower().strip() in DESC_ALIASES), None)
+                            if not desc_col:
+                                # Fallback: first text/object column
+                                desc_col = next((c for c in cols if df[c].dtype == object), None)
+                            unit_col = next((c for c in cols if c.lower().strip() in UNIT_ALIASES), None)
                             
                             if not desc_col:
-                                st.error(t("خطأ: لم يتم العثور على عمود الوصف في البيانات.", "Error: Description column not found in data."))
-                                return
+                                st.error(t("خطأ: لم يتم التعرف على عمود الوصف. أعمدة المتاحة: " + ", ".join(cols), "Error: Could not identify description column. Available: " + ", ".join(cols)))
+
 
                             # Smart matching prompt
                             match_prompt = f"""
