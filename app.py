@@ -8,6 +8,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import auth
 import utils.__init__ as utils
+from utils import t
 import database
 from ai_engine.market_api import MarketEngine
 
