@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EngiCost AI — المنصة الهندسية الذكية الأولى في مصر</title>
+  <meta name="description"
+    content="منصة EngiCost AI — تسعير المقايسات، تحليل المخططات، وإدارة المشاريع الهندسية بالذكاء الاصطناعي. حلول هندسية ذكية للمقاولين والمهندسين في مصر والشرق الأوسط.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #020617;
+      --accent: #0ea5e9;
+      --accent2: #6366f1;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --card: rgba(30, 41, 59, 0.5);
+      --border: rgba(255, 255, 255, 0.08);
+      --success: #10b981;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cairo', 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(at 10% 10%, rgba(14, 165, 233, .12) 0, transparent 55%),
+        radial-gradient(at 90% 80%, rgba(99, 102, 241, .12) 0, transparent 55%);
+      pointer-events: none;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      background: rgba(2, 6, 23, .85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .9rem 5%;
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      padding: .55rem 1.4rem;
+      border-radius: 30px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: .3s;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(14, 165, 233, .45);
+    }
+
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 7rem 5% 4rem;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(14, 165, 233, .15);
+      border: 1px solid rgba(14, 165, 233, .3);
+      color: var(--accent);
+      padding: .35rem 1rem;
+      border-radius: 30px;
+      font-size: .8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      letter-spacing: .5px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 650px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.8;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      padding: .75rem 2rem;
+      border-radius: 14px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: .3s;
+      display: inline-block;
+      box-shadow: 0 4px 20px rgba(14, 165, 233, .35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 35px rgba(14, 165, 233, .55);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: .75rem 2rem;
+      border-radius: 14px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 600;
+      text-decoration: none;
+      transition: .3s;
+      display: inline-block;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 3.5rem;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    /* ── Section base ── */
+    .section {
+      padding: 5rem 5%;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title h2 {
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: .5rem;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    /* ── Feature Cards ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.8rem;
+      transition: .4s cubic-bezier(.4, 0, .2, 1);
+      backdrop-filter: blur(10px);
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, .4), 0 0 20px rgba(14, 165, 233, .1);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.7;
+    }
+
+    /* ── Modules Grid ── */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+
+    .module-chip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .75rem 1rem;
+      text-align: center;
+      font-size: .85rem;
+      font-weight: 600;
+      transition: .3s;
+      cursor: default;
+    }
+
+    .module-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Pricing ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .plan-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: .3s;
+      position: relative;
+    }
+
+    .plan-card.popular {
+      border-color: var(--accent);
+      transform: scale(1.04);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      padding: .3rem 1.2rem;
+      border-radius: 30px;
+      font-size: .75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .plan-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: .5rem;
+    }
+
+    .plan-price {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: .5rem 0;
+    }
+
+    .plan-price span {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .plan-feature {
+      color: var(--muted);
+      font-size: .9rem;
+      padding: .3rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .plan-feature:last-of-type {
+      border: none;
+    }
+
+    /* ── CTA Section ── */
+    .cta-section {
+      background: linear-gradient(135deg, rgba(14, 165, 233, .1), rgba(99, 102, 241, .1));
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 4rem 3rem;
+      text-align: center;
+      margin: 0 5% 5rem;
+    }
+
+    .cta-section h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      color: var(--muted);
+      margin-bottom: 2rem;
+      font-size: 1.05rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    footer p {
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: .85rem;
+      text-decoration: none;
+      transition: .2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    @media(max-width:640px) {
+      .hero {
+        padding: 6rem 1.5rem 3rem;
+      }
+
+      .section {
+        padding: 3rem 1.5rem;
+      }
+
+      nav {
+        padding: .8rem 1.5rem;
+      }
+
+      .cta-section {
+        margin: 0 1.5rem 3rem;
+        padding: 2.5rem 1.5rem;
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav>
+    <div class="logo">🏗️ EngiCost AI</div>
+    <a href="https://engicost.streamlit.app" class="nav-cta">ابدأ مجاناً ←</a>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div>
+      <div class="hero-badge">🇪🇬 المنصة الهندسية الأولى في مصر والشرق الأوسط</div>
+      <h1>بدّل 5 برامج<br><span>بمنصة واحدة ذكية</span></h1>
+      <p>
+        من تسعير المقايسات وتحليل المخططات بالذكاء الاصطناعي، إلى إدارة المشاريع والموردين والموارد البشرية.
+        كل ما يحتاجه المهندس والمقاول في مكان واحد.
+      </p>
+      <div class="hero-btns">
+        <a href="https://engicost.streamlit.app" class="btn-primary">🚀 ابدأ مجاناً الآن</a>
+        <a href="https://wa.me/201000000000" class="btn-outline">📱 تحدث معنا</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num">28+</div>
+          <div class="stat-label">أداة هندسية متكاملة</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">AI</div>
+          <div class="stat-label">مدعوم بـ Gemini & Groq</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">📱</div>
+          <div class="stat-label">يعمل أوفلاين على الموبايل</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">EGP</div>
+          <div class="stat-label">أسعار السوق لحظياً</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Core Features ── -->
+  <section class="section">
+    <div class="section-title">
+      <h2>لماذا EngiCost AI؟</h2>
+      <p>ميزات لا تجدها في أي منصة أخرى في السوق المصري</p>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <h3>تسعير BOQ بالذكاء الاصطناعي</h3>
+        <p>سعّر مقايستك بدقة عالية مع أسعار السوق المصري اللحظية من عز ستيل وسويس سيمنت.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📐</div>
+        <h3>تحليل المخططات الهندسية</h3>
+        <p>ارفع مخططك واستخرج الكميات تلقائياً بدعم من Gemini AI في ثوانٍ معدودة.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚖️</div>
+        <h3>محلل عقود FIDIC</h3>
+        <p>حمّل عقد المقاولة واحصل على تحليل مخاطر كامل وفق معايير FIDIC بالعربية والإنجليزية.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📅</div>
+        <h3>جدول جانت وتقدم الأعمال</h3>
+        <p>خطط وتابع مشروعك بجدول زمني ذكي مع تتبع نسب الإنجاز الفعلي.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌍</div>
+        <h3>رفع مساحي (GIS)</h3>
+        <p>حسّب مساحة قطعة الأرض بدقة عبر القمر الصناعي مع خريطة تفاعلية احترافية.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📱</div>
+        <h3>يعمل بدون إنترنت</h3>
+        <p>ثبّته على موبايلك كـ PWA واستخدمه في الموقع حتى بدون اتصال بالإنترنت.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── All Modules ── -->
+  <section class="section"
+    style="background:rgba(14,165,233,.03); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="section-title">
+      <h2>28+ أداة هندسية في مكان واحد</h2>
+      <p>من التسعير إلى الإدارة — شامل وبالكامل</p>
+    </div>
+    <div class="modules-grid">
+      <div class="module-chip">🏠 لوحة القيادة</div>
+      <div class="module-chip">📈 أسعار السوق</div>
+      <div class="module-chip">🌍 متجر العطاءات</div>
+      <div class="module-chip">🤖 المساعد الذكي</div>
+      <div class="module-chip">📐 تحليل المخططات</div>
+      <div class="module-chip">⚖️ FIDIC Scanner</div>
+      <div class="module-chip">💰 تسعير BOQ</div>
+      <div class="module-chip">⚖️ مقارنة العروض</div>
+      <div class="module-chip">💹 حاسبة الربح</div>
+      <div class="module-chip">🏛️ حسابات إنشائية</div>
+      <div class="module-chip">📐 تفريد الحديد BBS</div>
+      <div class="module-chip">⚙️ أنظمة MEP</div>
+      <div class="module-chip">📅 جدول جانت</div>
+      <div class="module-chip">📐 محرك الرسم AI</div>
+      <div class="module-chip">🌍 رفع مساحي GIS</div>
+      <div class="module-chip">✔️ QA/QC</div>
+      <div class="module-chip">🧧 شهادة IPC</div>
+      <div class="module-chip">🤝 الموردين & RFQ</div>
+      <div class="module-chip">📦 إدارة المخازن</div>
+      <div class="module-chip">💵 المالية والأرباح</div>
+      <div class="module-chip">👷 الموارد البشرية</div>
+      <div class="module-chip">🚜 الأصول والمعدات</div>
+      <div class="module-chip">🤝 نظام التعاون</div>
+      <div class="module-chip">💳 الاشتراكات</div>
+    </div>
+  </section>
+
+  <!-- ── Pricing ── -->
+  <section class="section">
+    <div class="section-title">
+      <h2>أسعار شفافة بالجنيه المصري</h2>
+      <p>ابدأ مجاناً — لا بطاقة ائتمان مطلوبة</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan-card">
+        <div class="plan-name">🆓 Free</div>
+        <div class="plan-price">0 <span>EGP/شهر</span></div>
+        <div class="plan-feature">1 مخطط شهرياً</div>
+        <div class="plan-feature">1 مقايسة شهرياً</div>
+        <div class="plan-feature">لوحة القيادة</div>
+        <div class="plan-feature">أسعار السوق</div>
+        <br>
+        <a href="https://engicost.streamlit.app" class="btn-outline" style="display:block;">ابدأ مجاناً</a>
+      </div>
+      <div class="plan-card popular">
+        <div class="popular-badge">⭐ الأكثر طلباً</div>
+        <div class="plan-name">⚡ Pro</div>
+        <div class="plan-price">299 <span>EGP/شهر</span></div>
+        <div class="plan-feature">50 مخطط شهرياً</div>
+        <div class="plan-feature">100 مقايسة شهرياً</div>
+        <div class="plan-feature">جميع الأدوات الهندسية</div>
+        <div class="plan-feature">تحليل FIDIC</div>
+        <div class="plan-feature">تصدير Excel & PDF</div>
+        <br>
+        <a href="https://engicost.streamlit.app" class="btn-primary" style="display:block;">اشترك الآن</a>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">🏛️ Enterprise</div>
+        <div class="plan-price">799 <span>EGP/شهر</span></div>
+        <div class="plan-feature">غير محدود</div>
+        <div class="plan-feature">جميع المميزات</div>
+        <div class="plan-feature">أولوية الدعم</div>
+        <div class="plan-feature">تقارير متقدمة</div>
+        <div class="plan-feature">API مخصص</div>
+        <br>
+        <a href="https://wa.me/201000000000" class="btn-outline" style="display:block;">تواصل معنا</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <div class="cta-section">
+    <h2>🚀 جاهز للبدء؟</h2>
+    <p>انضم لآلاف المهندسين والمقاولين الذين يستخدمون EngiCost AI لتوفير الوقت وضمان الدقة</p>
+    <a href="https://engicost.streamlit.app" class="btn-primary" style="font-size:1.1rem; padding:.9rem 2.5rem;">ابدأ
+      مجاناً الآن ←</a>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <p>© 2026 EngiCost AI · جميع الحقوق محفوظة</p>
+    <div class="footer-links">
+      <a href="https://engicost.streamlit.app">المنصة</a>
+      <a href="https://wa.me/201000000000">واتساب</a>
+      <a href="https://github.com/marsa-mtse/engicost-ai">GitHub</a>
+    </div>
+  </footer>
+
+</body>
+
+</html>

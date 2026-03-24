@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EngiCost AI — وضع عدم الاتصال</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #020617;
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .card {
+    background: rgba(30,41,59,0.8);
+    border: 1px solid rgba(14,165,233,0.3);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    backdrop-filter: blur(20px);
+    animation: fadeUp 0.6s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .icon { font-size: 4rem; margin-bottom: 1rem; }
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0ea5e9;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    color: #94a3b8;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .features {
+    background: rgba(14,165,233,0.06);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 2rem;
+    text-align: right;
+  }
+
+  .features p {
+    margin: 0.4rem 0;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+  }
+
+  .features p::before { content: "✅ "; }
+
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(14,165,233,0.4);
+  }
+
+  .status-badge {
+    display: inline-block;
+    background: rgba(251,146,60,0.15);
+    border: 1px solid rgba(251,146,60,0.4);
+    color: #fb923c;
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer {
+    margin-top: 2rem;
+    font-size: 0.78rem;
+    color: #475569;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">🏗️</div>
+  <span class="status-badge">📴 وضع عدم الاتصال | Offline Mode</span>
+  <h1>EngiCost AI</h1>
+  <p class="subtitle">
+    يبدو أنك غير متصل بالإنترنت حالياً.<br>
+    يمكنك استخدام بعض الميزات الهندسية بدون إنترنت.
+  </p>
+
+  <div class="features">
+    <p>حسابات الكميات والمقايسات المحفوظة</p>
+    <p>الحسابات الإنشائية &amp; جداول الحديد</p>
+    <p>عرض مشاريعك المحفوظة مؤقتاً</p>
+    <p>نماذج جدول جانت المحفوظة</p>
+  </div>
+
+  <button class="btn" onclick="window.location.reload()">
+    🔄 إعادة المحاولة | Try Again
+  </button>
+
+  <div class="footer">
+    EngiCost AI v1.7.0 — Smart Engineering Platform
+  </div>
+</div>
+
+<script>
+  // Auto-retry when connection is restored
+  window.addEventListener('online', () => {
+    console.log('Connection restored — reloading...');
+    window.location.reload();
+  });
+
+  // Show connection status indicator
+  if (!navigator.onLine) {
+    console.log('Currently offline — showing offline page.');
+  }
+</script>
+</body>
+</html>

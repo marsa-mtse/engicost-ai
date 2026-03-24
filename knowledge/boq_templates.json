@@ -1,0 +1,102 @@
+{
+  "version": "2026-Q1",
+  "description": "قوالب مقايسات هندسية جاهزة للمشاريع الشائعة",
+  "templates": [
+    {
+      "id": "TMPL-VILLA-BARE",
+      "name_ar": "فيلا سكنية — هيكل إنشائي فقط",
+      "name_en": "Residential Villa — Bare Shell",
+      "scope": "أعمال الخرسانة والحديد والبلوك فقط — بدون تشطيب",
+      "applicable_for": "فيلا مساحة 150-400م2",
+      "keywords": ["فيلا هيكل", "villa shell", "هيكل فيلا", "خرسانة فيلا"],
+      "items": [
+        {"item": "أعمال الحفر والتسوية", "unit": "م3", "quantity_formula": "area_m2 * 0.7", "rate_egp": 180},
+        {"item": "خرسانة نظافة تحت الأساسات M100", "unit": "م3", "quantity_formula": "area_m2 * 0.1", "rate_egp": 2400},
+        {"item": "حديد تسليح الأساسات", "unit": "طن", "quantity_formula": "area_m2 * 0.04", "rate_egp": 29500},
+        {"item": "خرسانة الأساسات M300", "unit": "م3", "quantity_formula": "area_m2 * 0.25", "rate_egp": 3700},
+        {"item": "حديد تسليح الأعمدة", "unit": "طن", "quantity_formula": "area_m2 * 0.025 * floors", "rate_egp": 29500},
+        {"item": "خرسانة الأعمدة M300", "unit": "م3", "quantity_formula": "area_m2 * 0.04 * floors", "rate_egp": 3700},
+        {"item": "حديد تسليح البلاطات والكمرات", "unit": "طن", "quantity_formula": "area_m2 * 0.015 * floors", "rate_egp": 29000},
+        {"item": "خرسانة البلاطات والكمرات M250", "unit": "م3", "quantity_formula": "area_m2 * 0.2 * floors", "rate_egp": 3350},
+        {"item": "بناء طوب بلوك خرساني 20سم", "unit": "م2", "quantity_formula": "area_m2 * 1.2 * floors", "rate_egp": 260},
+        {"item": "شدة خشبية (أجرة + تركيب + فك)", "unit": "م2", "quantity_formula": "area_m2 * 1.5 * floors", "rate_egp": 250},
+        {"item": "أعمال تسوية وردم", "unit": "م3", "quantity_formula": "area_m2 * 0.3", "rate_egp": 150}
+      ],
+      "notes": ["الكميات تقديرية بناءً على معادلات معيارية", "تختلف حسب التصميم الإنشائي الفعلي", "يُنصح بمراجعة المهندس المختص"]
+    },
+    {
+      "id": "TMPL-VILLA-FINISH",
+      "name_ar": "تشطيبات فيلا سكنية — كامل",
+      "name_en": "Villa Finishes — Full",
+      "scope": "أعمال التشطيب الداخلي والخارجي",
+      "applicable_for": "فيلا 150-400م2",
+      "keywords": ["تشطيب فيلا", "villa finishes", "تشطيبات", "ديكور فيلا"],
+      "items": [
+        {"item": "بياض داخلي (رش + مسطرة + بياض)", "unit": "م2", "quantity_formula": "area_m2 * 4 * floors", "rate_egp": 150},
+        {"item": "بلاط أرضيات سيراميك (60×60)", "unit": "م2", "quantity_formula": "area_m2 * floors", "rate_egp": 400},
+        {"item": "سيراميك حمامات ومطبخ (جدران)", "unit": "م2", "quantity_formula": "area_m2 * 0.4 * floors", "rate_egp": 280},
+        {"item": "أعمال دهانات داخلية (طبقتين)", "unit": "م2", "quantity_formula": "area_m2 * 4 * floors", "rate_egp": 110},
+        {"item": "أعمال كهرباء كاملة", "unit": "م2", "quantity_formula": "area_m2 * floors", "rate_egp": 1150},
+        {"item": "أعمال سباكة كاملة", "unit": "م2", "quantity_formula": "area_m2 * floors", "rate_egp": 900},
+        {"item": "عزل مائي أسطح بيتومين 3مم", "unit": "م2", "quantity_formula": "area_m2 * 1.1", "rate_egp": 160},
+        {"item": "نوافذ ألوميتال (دبل جلاس)", "unit": "م2", "quantity_formula": "area_m2 * 0.15 * floors", "rate_egp": 2800},
+        {"item": "أبواب خشبية داخلية (HDF)", "unit": "باب", "quantity_formula": "area_m2 * floors * 0.03", "rate_egp": 4500},
+        {"item": "دَهان أسقف وجدران خارجية", "unit": "م2", "quantity_formula": "area_m2 * 1.8 * floors", "rate_egp": 140}
+      ]
+    },
+    {
+      "id": "TMPL-APT-BARE",
+      "name_ar": "عمارة سكنية — هيكل إنشائي",
+      "name_en": "Residential Building — Bare Shell",
+      "scope": "هيكل عمارة سكنية متعددة الطوابق",
+      "applicable_for": "عمارة 4-10 طوابق",
+      "keywords": ["عمارة هيكل", "building shell", "هيكل عمارة", "بناء عمارة"],
+      "items": [
+        {"item": "أعمال الحفر والتدعيم", "unit": "م3", "quantity_formula": "area_m2 * 2.0", "rate_egp": 200},
+        {"item": "خرسانة نظافة تحت الأساسات", "unit": "م3", "quantity_formula": "area_m2 * 0.1", "rate_egp": 2400},
+        {"item": "أساسات خازوقية أو حصيرة (حسب التقرير)", "unit": "م3", "quantity_formula": "area_m2 * 0.4", "rate_egp": 4200},
+        {"item": "حديد تسليح الأساسات", "unit": "طن", "quantity_formula": "area_m2 * 0.06", "rate_egp": 29500},
+        {"item": "حديد تسليح الدور المتكرر", "unit": "طن", "quantity_formula": "area_m2 * 0.045 * floors", "rate_egp": 29000},
+        {"item": "خرسانة الدور المتكرر M300", "unit": "م3", "quantity_formula": "area_m2 * 0.25 * floors", "rate_egp": 3700},
+        {"item": "بناء طوب الطابق المتكرر", "unit": "م2", "quantity_formula": "area_m2 * 1.5 * floors", "rate_egp": 260},
+        {"item": "عمالة صب وإكمال الهيكل", "unit": "م3 خرسانة", "quantity_formula": "area_m2 * 0.25 * floors", "rate_egp": 275}
+      ]
+    },
+    {
+      "id": "TMPL-RETAIL",
+      "name_ar": "محل تجاري / مكتب — تشطيب تجاري",
+      "name_en": "Retail / Office — Commercial Finish",
+      "scope": "تشطيب مكتبي أو تجاري",
+      "applicable_for": "مساحة 50-500م2",
+      "keywords": ["محل تجاري", "مكتب", "تشطيب تجاري", "retail fit-out", "office fit-out"],
+      "items": [
+        {"item": "أرضيات بورسلاني 60×60 (تجاري)", "unit": "م2", "quantity_formula": "area_m2", "rate_egp": 450},
+        {"item": "إضاءة LED مدمجة (بالمتر الخطي)", "unit": "م خطي", "quantity_formula": "area_m2 * 0.5", "rate_egp": 350},
+        {"item": "أعمال كهرباء تجارية", "unit": "م2", "quantity_formula": "area_m2", "rate_egp": 1400},
+        {"item": "أعمال تكييف مركزي", "unit": "م2", "quantity_formula": "area_m2", "rate_egp": 900},
+        {"item": "أقسام جبس بورد", "unit": "م2", "quantity_formula": "area_m2 * 0.6", "rate_egp": 350},
+        {"item": "حوائط زجاجية مؤطرة ألومينيوم", "unit": "م2", "quantity_formula": "area_m2 * 0.15", "rate_egp": 2200},
+        {"item": "دهانات تجارية (صناعية)", "unit": "م2", "quantity_formula": "area_m2 * 3", "rate_egp": 120},
+        {"item": "باب دخل رئيسي ألومينيوم", "unit": "وحدة", "quantity_formula": "1", "rate_egp": 18000}
+      ]
+    },
+    {
+      "id": "TMPL-WAREHOUSE",
+      "name_ar": "مستودع / مخزن — هيكل معدني",
+      "name_en": "Warehouse — Steel Structure",
+      "scope": "مستودع بهيكل معدني وبلاطة خرسانية",
+      "applicable_for": "مستودع 200-5000م2",
+      "keywords": ["مستودع", "مخزن", "warehouse", "هيكل معدني"],
+      "items": [
+        {"item": "أعمال الحفر والتسوية", "unit": "م3", "quantity_formula": "area_m2 * 0.5", "rate_egp": 150},
+        {"item": "بلاطة خرسانية أرضية M250 سُمك 15سم", "unit": "م3", "quantity_formula": "area_m2 * 0.15", "rate_egp": 3350},
+        {"item": "هيكل معدني (قطاعات صلب)", "unit": "طن", "quantity_formula": "area_m2 * 0.018", "rate_egp": 44000},
+        {"item": "تغطية ساندويتش بانل (سقف)", "unit": "م2", "quantity_formula": "area_m2 * 1.1", "rate_egp": 480},
+        {"item": "جوانب ساندويتش بانل (حوائط)", "unit": "م2", "quantity_formula": "area_m2 * 0.5", "rate_egp": 420},
+        {"item": "أعمال كهرباء صناعية أساسية", "unit": "م2", "quantity_formula": "area_m2", "rate_egp": 400},
+        {"item": "بوابات معدنية كبيرة", "unit": "وحدة", "quantity_formula": "area_m2 * 0.003", "rate_egp": 25000},
+        {"item": "أعمال صرف صحي ومياه", "unit": "م2", "quantity_formula": "area_m2", "rate_egp": 180}
+      ]
+    }
+  ]
+}

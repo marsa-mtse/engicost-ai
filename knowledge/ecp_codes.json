@@ -1,0 +1,157 @@
+{
+  "version": "ECP-203-2026",
+  "source": "كود البناء المصري ECP 203 — الطبعة المحدثة",
+  "note": "هذه البيانات لأغراض إرشادية هندسية فقط. يُنصح دائماً بمراجعة المهندس المختص",
+  "sections": {
+    "concrete_mix_design": {
+      "title_ar": "تصميم خلطة الخرسانة",
+      "title_en": "Concrete Mix Design",
+      "rules": [
+        {
+          "id": "CMD-001",
+          "rule_ar": "الحد الأدنى لمقاومة الخرسانة للمنشآت الإنشائية: 250 kg/cm² (M25)",
+          "rule_en": "Minimum concrete strength for structural elements: 250 kg/cm² (M25)",
+          "reference": "ECP 203 - Art. 4.2.1"
+        },
+        {
+          "id": "CMD-002",
+          "rule_ar": "نسبة الماء للأسمنت: لا تتجاوز 0.45 للخرسانة المسلحة في البيئات العادية",
+          "rule_en": "Water-to-cement ratio: max 0.45 for RC in normal environments",
+          "reference": "ECP 203 - Art. 4.3.2"
+        },
+        {
+          "id": "CMD-003",
+          "rule_ar": "الحد الأدنى للغطاء الخرساني للحديد: 25مم داخلي، 40مم خارجي، 50مم تحت الأرض",
+          "rule_en": "Min concrete cover: 25mm interior, 40mm exterior, 50mm underground",
+          "reference": "ECP 203 - Art. 6.3.1"
+        },
+        {
+          "id": "CMD-004",
+          "rule_ar": "درجة انهيار الخرسانة (Slump) للأعمدة: 75-100مم",
+          "rule_en": "Slump for columns: 75-100mm",
+          "reference": "ECP 203 - Art. 4.5.3"
+        }
+      ]
+    },
+    "steel_reinforcement": {
+      "title_ar": "حديد التسليح",
+      "title_en": "Steel Reinforcement",
+      "rules": [
+        {
+          "id": "SR-001",
+          "rule_ar": "نسبة حديد الأعمدة: الحد الأدنى 0.8%، الحد الأقصى 6% من مساحة المقطع",
+          "rule_en": "Column steel ratio: min 0.8%, max 6% of cross-section area",
+          "reference": "ECP 203 - Art. 6.4.3"
+        },
+        {
+          "id": "SR-002",
+          "rule_ar": "نسبة حديد البلاطات: الحد الأدنى 0.25% للاتجاه الرئيسي",
+          "rule_en": "Slab steel ratio: min 0.25% in main direction",
+          "reference": "ECP 203 - Art. 6.2.1"
+        },
+        {
+          "id": "SR-003",
+          "rule_ar": "قطر الكانات: الحد الأدنى 8مم أو ربع قطر أكبر قضيب",
+          "rule_en": "Stirrup diameter: min 8mm or 1/4 of largest bar diameter",
+          "reference": "ECP 203 - Art. 6.4.5"
+        },
+        {
+          "id": "SR-004",
+          "rule_ar": "مسافة التوزيع للكانات في الأعمدة: لا تزيد عن 16 قطر قضيب أو 48 قطر كانة أو أصغر بعد للعمود",
+          "rule_en": "Column tie spacing: min of 16 bar dia., 48 tie dia., or least column dim.",
+          "reference": "ECP 203 - Art. 6.4.5"
+        },
+        {
+          "id": "SR-005",
+          "rule_ar": "طول وصلة التسليح (Lap Splice): 40 ضعف القطر للشد، 30 ضعف للضغط",
+          "rule_en": "Lap splice length: 40 bar diameters in tension, 30 in compression",
+          "reference": "ECP 203 - Art. 6.7.2"
+        },
+        {
+          "id": "SR-006",
+          "rule_ar": "معامل ضرب الحديد التقريبي للبلاطات العادية: 12-18 كج/م2",
+          "rule_en": "Typical rebar weight for slabs: 12-18 kg/m2",
+          "reference": "تجربة هندسية معيارية"
+        },
+        {
+          "id": "SR-007",
+          "rule_ar": "وزن الحديد للأعمدة والكمرات: 150-250 كج/م3 خرسانة",
+          "rule_en": "Rebar weight for columns & beams: 150-250 kg/m3 concrete",
+          "reference": "تجربة هندسية معيارية"
+        }
+      ]
+    },
+    "foundations": {
+      "title_ar": "الأساسات",
+      "title_en": "Foundations",
+      "rules": [
+        {
+          "id": "FND-001",
+          "rule_ar": "عمق الأساسات: لا يقل عن 50سم تحت مستوى سطح الأرض، ويُثبت عن طريق التحقيق",
+          "rule_en": "Foundation depth: min 50cm below ground, confirmed by soil investigation",
+          "reference": "ECP 203 - Art. 3.1"
+        },
+        {
+          "id": "FND-002",
+          "rule_ar": "الضغط المسموح به على التربة الرملية المتماسكة: 1.5-2.5 كج/سم2",
+          "rule_en": "Allowable soil pressure (dense sand): 1.5-2.5 kg/cm2",
+          "reference": "ECP 202 (Soil)"
+        },
+        {
+          "id": "FND-003",
+          "rule_ar": "الضغط المسموح به على الطين: 0.5-1.5 كج/سم2 حسب استشارة التربة",
+          "rule_en": "Allowable soil pressure (clay): 0.5-1.5 kg/cm2 per soil report",
+          "reference": "ECP 202 (Soil)"
+        },
+        {
+          "id": "FND-004",
+          "rule_ar": "طبقة نظافة (خرسانة مسطحة): سُمك 10سم تحت الأساس مباشرة",
+          "rule_en": "Blinding concrete: 10cm thick directly under foundation",
+          "reference": "ممارسة هندسية قياسية"
+        }
+      ]
+    },
+    "slabs": {
+      "title_ar": "البلاطات",
+      "title_en": "Slabs",
+      "rules": [
+        {
+          "id": "SLB-001",
+          "rule_ar": "سُمك البلاطة الصماء: طول البحر ÷ 30 (الحد الأدنى)، لا يقل عن 12سم",
+          "rule_en": "Solid slab thickness: span/30 (min), not less than 12cm",
+          "reference": "ECP 203 - Art. 6.2.3"
+        },
+        {
+          "id": "SLB-002",
+          "rule_ar": "البلاطة الهوردي (Hollow block): يُفضَّل للبحور من 4-7م، يوفر في وزن الخرسانة",
+          "rule_en": "Hollow block slab: preferred for spans 4-7m, reduces concrete weight",
+          "reference": "ECP 203 - Art. 6.3"
+        },
+        {
+          "id": "SLB-003",
+          "rule_ar": "حمل التصميم: 200 كج/م2 للمساكن، 300-400 كج/م2 للمكاتب",
+          "rule_en": "Design live load: 200 kg/m2 residential, 300-400 kg/m2 offices",
+          "reference": "ECP 201 (Loads)"
+        }
+      ]
+    },
+    "fire_safety": {
+      "title_ar": "الحماية من الحريق",
+      "title_en": "Fire Safety",
+      "rules": [
+        {
+          "id": "FS-001",
+          "rule_ar": "مقاومة الحريق للأعمدة الرئيسية: ساعتان على الأقل (غطاء 50مم)",
+          "rule_en": "Fire resistance for main columns: min 2 hours (50mm cover)",
+          "reference": "ECP 204 (Fire)"
+        },
+        {
+          "id": "FS-002",
+          "rule_ar": "مخارج الطوارئ: يجب توفير مخرج طوارئ لكل 500م2 أو أقل",
+          "rule_en": "Emergency exits: one required per 500m2 or less",
+          "reference": "ECP 204 (Fire) - Art. 5.1"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "version": "2026-Q1",
+  "last_updated": "March 2026",
+  "currency": "EGP",
+  "source": "متوسط أسعار السوق المصري — مارس 2026",
+  "categories": {
+    "concrete": {
+      "label_ar": "الخرسانة",
+      "label_en": "Concrete",
+      "items": [
+        {"id": "c_200", "name_ar": "خرسانة عادية M200", "name_en": "Concrete M200", "unit": "م3", "price_min": 2800, "price_max": 3200, "price_avg": 3000, "note": "بدون حديد، جاهزة من مصنع"},
+        {"id": "c_250", "name_ar": "خرسانة M250", "name_en": "Concrete M250", "unit": "م3", "price_min": 3100, "price_max": 3600, "price_avg": 3350, "note": "جاهزة من مصنع"},
+        {"id": "c_300", "name_ar": "خرسانة M300", "name_en": "Concrete M300", "unit": "م3", "price_min": 3400, "price_max": 4000, "price_avg": 3700, "note": "مقاومة عالية، مناسبة للأساسات"},
+        {"id": "c_350", "name_ar": "خرسانة M350", "name_en": "Concrete M350", "unit": "م3", "price_min": 3800, "price_max": 4400, "price_avg": 4100, "note": "مقاومة عالية جداً"},
+        {"id": "c_sand", "name_ar": "خرسانة مسطحة (نظافة)", "name_en": "Blinding Concrete", "unit": "م3", "price_min": 2200, "price_max": 2600, "price_avg": 2400, "note": "طبقة نظافة تحت الأساسات"},
+        {"id": "c_grout", "name_ar": "مونة خرسانية", "name_en": "Grout Mortar", "unit": "م3", "price_min": 3500, "price_max": 4500, "price_avg": 4000}
+      ]
+    },
+    "steel": {
+      "label_ar": "الحديد والصلب",
+      "label_en": "Steel & Rebar",
+      "items": [
+        {"id": "s_rebar_10", "name_ar": "حديد تسليح ∅10", "name_en": "Rebar ∅10", "unit": "طن", "price_min": 28000, "price_max": 31000, "price_avg": 29500},
+        {"id": "s_rebar_12", "name_ar": "حديد تسليح ∅12", "name_en": "Rebar ∅12", "unit": "طن", "price_min": 27500, "price_max": 30500, "price_avg": 29000},
+        {"id": "s_rebar_16", "name_ar": "حديد تسليح ∅16", "name_en": "Rebar ∅16", "unit": "طن", "price_min": 27000, "price_max": 30000, "price_avg": 28500},
+        {"id": "s_rebar_20", "name_ar": "حديد تسليح ∅20", "name_en": "Rebar ∅20", "unit": "طن", "price_min": 27000, "price_max": 29500, "price_avg": 28200},
+        {"id": "s_rebar_25", "name_ar": "حديد تسليح ∅25", "name_en": "Rebar ∅25", "unit": "طن", "price_min": 26800, "price_max": 29500, "price_avg": 28000},
+        {"id": "s_mesh", "name_ar": "شبك حديد (Welded Mesh)", "name_en": "Welded Mesh", "unit": "م2", "price_min": 180, "price_max": 240, "price_avg": 210},
+        {"id": "s_section", "name_ar": "قطاعات صلب هيكلية (IPN/IPE)", "name_en": "Structural Steel Sections", "unit": "طن", "price_min": 40000, "price_max": 48000, "price_avg": 44000},
+        {"id": "s_pipe", "name_ar": "أنابيب صلب دائرية", "name_en": "Steel Round Pipes", "unit": "طن", "price_min": 38000, "price_max": 45000, "price_avg": 41500}
+      ]
+    },
+    "bricks_masonry": {
+      "label_ar": "الطوب والأعمال المعدنية",
+      "label_en": "Bricks & Masonry",
+      "items": [
+        {"id": "b_red_full", "name_ar": "طوب أحمر حر (ملبن)", "name_en": "Solid Red Brick", "unit": "ألف طوبة", "price_min": 3200, "price_max": 4000, "price_avg": 3600},
+        {"id": "b_red_hollow", "name_ar": "طوب أحمر مفرغ", "name_en": "Hollow Red Brick", "unit": "ألف طوبة", "price_min": 2800, "price_max": 3500, "price_avg": 3100},
+        {"id": "b_foam", "name_ar": "طوب خرسانة رغوية (فوم)", "name_en": "Foam Concrete Block", "unit": "م3", "price_min": 1800, "price_max": 2400, "price_avg": 2100},
+        {"id": "b_hcb", "name_ar": "بلوك خرساني (HCB)", "name_en": "HCB Block 20x20x40", "unit": "م2", "price_min": 220, "price_max": 300, "price_avg": 260, "note": "شامل مونة ويد عمال"},
+        {"id": "b_mortar", "name_ar": "مونة بناء (رمل+جير+سمنت)", "name_en": "Masonry Mortar", "unit": "م3", "price_min": 1200, "price_max": 1600, "price_avg": 1400}
+      ]
+    },
+    "cement_sand": {
+      "label_ar": "السمنت والرمل",
+      "label_en": "Cement & Sand",
+      "items": [
+        {"id": "cem_opc", "name_ar": "أسمنت بورتلاند عادي OPC", "name_en": "OPC Cement (50kg bag)", "unit": "شيكارة 50كج", "price_min": 280, "price_max": 320, "price_avg": 300},
+        {"id": "cem_bag_ton", "name_ar": "أسمنت بالطن", "name_en": "Cement per Ton", "unit": "طن", "price_min": 5500, "price_max": 6200, "price_avg": 5800},
+        {"id": "sand_sharp", "name_ar": "رمل خشن (نهري)", "name_en": "Sharp Sand", "unit": "م3", "price_min": 400, "price_max": 600, "price_avg": 500},
+        {"id": "sand_sieved", "name_ar": "رمل منخول (للمونة)", "name_en": "Sieved Sand", "unit": "م3", "price_min": 350, "price_max": 500, "price_avg": 420},
+        {"id": "gravel_20", "name_ar": "زلط 20مم", "name_en": "Gravel 20mm", "unit": "م3", "price_min": 500, "price_max": 700, "price_avg": 600},
+        {"id": "gravel_10", "name_ar": "زلط 10مم", "name_en": "Gravel 10mm", "unit": "م3", "price_min": 550, "price_max": 750, "price_avg": 650}
+      ]
+    },
+    "tiles_finishes": {
+      "label_ar": "السيراميك والتشطيبات",
+      "label_en": "Tiles & Finishes",
+      "items": [
+        {"id": "t_ceramic_floor", "name_ar": "سيراميك أرضيات متوسط", "name_en": "Ceramic Floor Tiles (medium)", "unit": "م2", "price_min": 150, "price_max": 280, "price_avg": 210},
+        {"id": "t_ceramic_wall", "name_ar": "سيراميك حوائط حمام", "name_en": "Ceramic Wall Tiles (bathroom)", "unit": "م2", "price_min": 130, "price_max": 250, "price_avg": 190},
+        {"id": "t_porcelain", "name_ar": "بورسلان 60×60", "name_en": "Porcelain 60x60", "unit": "م2", "price_min": 280, "price_max": 550, "price_avg": 400},
+        {"id": "t_marble", "name_ar": "رخام أبيض مصري", "name_en": "Egyptian White Marble", "unit": "م2", "price_min": 600, "price_max": 1200, "price_avg": 850},
+        {"id": "t_granite", "name_ar": "جرانيت أسوان", "name_en": "Aswan Granite", "unit": "م2", "price_min": 900, "price_max": 1600, "price_avg": 1250},
+        {"id": "plaster_inside", "name_ar": "بياض داخلي رش+مسطرة+بياض", "name_en": "Interior Plaster (full)", "unit": "م2", "price_min": 120, "price_max": 180, "price_avg": 150},
+        {"id": "paint_inside", "name_ar": "دهانات داخلية (طبقتين)", "name_en": "Interior Paint (2 coats)", "unit": "م2", "price_min": 80, "price_max": 140, "price_avg": 110}
+      ]
+    },
+    "waterproofing": {
+      "label_ar": "العزل المائي والحراري",
+      "label_en": "Waterproofing & Insulation",
+      "items": [
+        {"id": "wp_bitumen_2mm", "name_ar": "لفائف بيتومين 2مم", "name_en": "Bitumen Membrane 2mm", "unit": "م2", "price_min": 95, "price_max": 140, "price_avg": 115},
+        {"id": "wp_bitumen_3mm", "name_ar": "لفائف بيتومين 3مم", "name_en": "Bitumen Membrane 3mm", "unit": "م2", "price_min": 130, "price_max": 190, "price_avg": 160},
+        {"id": "wp_crystalline", "name_ar": "عزل بالفنيلكين البلوري", "name_en": "Crystalline Waterproofing", "unit": "م2", "price_min": 300, "price_max": 500, "price_avg": 400},
+        {"id": "ins_foam", "name_ar": "لوح فوم عازل حرارياً 5سم", "name_en": "Foam Insulation Board 5cm", "unit": "م2", "price_min": 90, "price_max": 140, "price_avg": 115},
+        {"id": "ins_rockwool", "name_ar": "روك وول 5سم", "name_en": "Rock Wool 5cm", "unit": "م2", "price_min": 140, "price_max": 220, "price_avg": 180}
+      ]
+    },
+    "formwork": {
+      "label_ar": "شدات البناء",
+      "label_en": "Formwork",
+      "items": [
+        {"id": "fw_slabs", "name_ar": "شدة خشبية للبلاطات", "name_en": "Timber Formwork - Slabs", "unit": "م2", "price_min": 200, "price_max": 300, "price_avg": 250, "note": "إيجار + نجارة"},
+        {"id": "fw_columns", "name_ar": "شدة أعمدة", "name_en": "Column Formwork", "unit": "م2", "price_min": 250, "price_max": 380, "price_avg": 310},
+        {"id": "fw_metal", "name_ar": "شدة معدنية (إيجار)", "name_en": "Metal Formwork (rental)", "unit": "م2/شهر", "price_min": 50, "price_max": 90, "price_avg": 70}
+      ]
+    },
+    "mep": {
+      "label_ar": "الكهرباء والسباكة والتكييف",
+      "label_en": "MEP Systems",
+      "items": [
+        {"id": "mep_elec_villa", "name_ar": "أعمال كهرباء فيلا 200م2", "name_en": "Electrical - Villa 200m2", "unit": "مبنى", "price_min": 180000, "price_max": 280000, "price_avg": 230000, "note": "شامل لوحة + أسلاك + مفاتيح"},
+        {"id": "mep_plumb_villa", "name_ar": "أعمال سباكة فيلا 200م2", "name_en": "Plumbing - Villa 200m2", "unit": "مبنى", "price_min": 150000, "price_max": 220000, "price_avg": 185000},
+        {"id": "mep_ac_unit", "name_ar": "تكييف سبليت 1.5 حصان", "name_en": "AC Split 1.5 HP", "unit": "وحدة", "price_min": 18000, "price_max": 28000, "price_avg": 23000},
+        {"id": "mep_elec_sqm", "name_ar": "كهرباء بالمتر المربع (تشطيب كامل)", "name_en": "Electrical per m2 (full finish)", "unit": "م2", "price_min": 900, "price_max": 1400, "price_avg": 1150},
+        {"id": "mep_plumb_sqm", "name_ar": "سباكة بالمتر المربع", "name_en": "Plumbing per m2", "unit": "م2", "price_min": 700, "price_max": 1100, "price_avg": 900}
+      ]
+    },
+    "labor_rates": {
+      "label_ar": "أجور العمالة (يومية)",
+      "label_en": "Daily Labor Rates",
+      "items": [
+        {"id": "lab_naggr", "name_ar": "نجار (خشب وشدة)", "name_en": "Carpenter (formwork)", "unit": "يوم", "price_min": 600, "price_max": 900, "price_avg": 750},
+        {"id": "lab_haddad", "name_ar": "حداد تسليح", "name_en": "Rebar Fixer", "unit": "يوم", "price_min": 550, "price_max": 850, "price_avg": 700},
+        {"id": "lab_kharsana", "name_ar": "صب خرسانة (عمالة فقط/م3)", "name_en": "Concrete Labor /m3", "unit": "م3", "price_min": 200, "price_max": 350, "price_avg": 275},
+        {"id": "lab_banaa", "name_ar": "بنّاء طوب", "name_en": "Bricklayer", "unit": "يوم", "price_min": 500, "price_max": 750, "price_avg": 620},
+        {"id": "lab_maallim", "name_ar": "معلم بلاط/سيراميك", "name_en": "Tiler", "unit": "يوم", "price_min": 700, "price_max": 1100, "price_avg": 900},
+        {"id": "lab_lsa", "name_ar": "عمال عادي (لساعي)", "name_en": "General Labor", "unit": "يوم", "price_min": 250, "price_max": 400, "price_avg": 320},
+        {"id": "lab_eng", "name_ar": "مشرف مقيم (مهندس)", "name_en": "Resident Engineer", "unit": "شهر", "price_min": 8000, "price_max": 18000, "price_avg": 12000}
+      ]
+    },
+    "construction_cost_benchmarks": {
+      "label_ar": "معايير تكلفة البناء الإجمالية",
+      "label_en": "Construction Cost Benchmarks",
+      "items": [
+        {"id": "bench_villa_bare", "name_ar": "فيلا هيكل فقط (بدون تشطيب)", "name_en": "Villa - Bare Shell", "unit": "م2", "price_min": 6000, "price_max": 9000, "price_avg": 7500, "note": "يشمل: أساسات + هيكل + مبانى + سقف"},
+        {"id": "bench_villa_full", "name_ar": "فيلا تشطيب كامل (ممتاز)", "name_en": "Villa - Full Finish (premium)", "unit": "م2", "price_min": 12000, "price_max": 20000, "price_avg": 16000},
+        {"id": "bench_apt_bare", "name_ar": "شقة هيكل (متوسط)", "name_en": "Apartment - Bare Shell", "unit": "م2", "price_min": 5000, "price_max": 7500, "price_avg": 6200},
+        {"id": "bench_apt_full", "name_ar": "شقة تشطيب كامل (اقتصادي)", "name_en": "Apartment - Full Finish (economic)", "unit": "م2", "price_min": 8000, "price_max": 12000, "price_avg": 10000},
+        {"id": "bench_mall", "name_ar": "محل تجاري تشطيب تجاري", "name_en": "Retail Unit - Commercial Finish", "unit": "م2", "price_min": 10000, "price_max": 18000, "price_avg": 14000},
+        {"id": "bench_warehouse", "name_ar": "مستودع / مخزن (هيكل معدني)", "name_en": "Warehouse - Steel Structure", "unit": "م2", "price_min": 4500, "price_max": 7000, "price_avg": 5800}
+      ]
+    }
+  }
+}

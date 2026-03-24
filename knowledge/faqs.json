@@ -1,0 +1,106 @@
+{
+  "version": "2026-Q1",
+  "description": "أسئلة المهندسين الشائعة على منصة EngiCost AI مع إجاباتها",
+  "faqs": [
+    {
+      "id": "FAQ-001",
+      "category": "pricing",
+      "question_ar": "ما سعر متر الخرسانة M300 الآن؟",
+      "question_en": "What is the current price of M300 concrete per m3?",
+      "keywords": ["سعر خرسانة", "m300", "متر خرسانة", "concrete price", "m300 price"],
+      "answer_ar": "سعر الخرسانة M300 الجاهزة في مصر (مارس 2026): من 3400 إلى 4000 جنيه للمتر المكعب، بمتوسط حوالي 3700 جنيه/م3. هذا السعر يشمل الخرسانة من المحطة وصبها موقع العمل بالميكسر. لا يشمل حديد التسليح أو الشدة.",
+      "answer_en": "M300 ready-mix concrete in Egypt (March 2026): EGP 3,400 to 4,000 per m3, avg ~3,700 EGP/m3. Price includes concrete from plant and delivery. Excludes rebar and formwork.",
+      "source": "prices.json - concrete.c_300"
+    },
+    {
+      "id": "FAQ-002",
+      "category": "pricing",
+      "question_ar": "كم سعر طن الحديد الآن؟",
+      "question_en": "What is the current price of steel rebar per ton?",
+      "keywords": ["سعر حديد", "سعر طن حديد", "rebar price", "steel price", "حديد تسليح"],
+      "answer_ar": "سعر حديد التسليح في مصر (مارس 2026):\n- ∅10مم: 28,000 - 31,000 جنيه/طن\n- ∅12-16مم: 27,000 - 30,500 جنيه/طن\n- ∅20-25مم: 26,800 - 29,500 جنيه/طن\nالمتوسط العام: حوالي 28,500 - 29,500 جنيه/طن حسب القطر",
+      "answer_en": "Rebar prices in Egypt (March 2026): EGP 26,800-31,000/ton depending on diameter. ∅10: 28-31k, ∅12-16: 27-30.5k, ∅20-25: 26.8-29.5k EGP/ton.",
+      "source": "prices.json - steel"
+    },
+    {
+      "id": "FAQ-003",
+      "category": "ecp_codes",
+      "question_ar": "ما أقل غطاء خرساني للحديد في الأعمدة؟",
+      "question_en": "What is the minimum concrete cover for rebar in columns?",
+      "keywords": ["غطاء خرساني", "concrete cover", "عازل حديد", "حماية حديد"],
+      "answer_ar": "وفقاً لكود البناء المصري ECP 203:\n- للأعمال الداخلية المحمية: 25مم\n- للأعمال الخارجية: 40مم\n- للأعمال تحت الأرض أو ملامسة التربة: 50مم\nيُنصح بزيادة الغطاء 10-15مم في البيئات الساحلية.",
+      "answer_en": "Per ECP 203: Interior protected: 25mm. Exterior exposed: 40mm. Below ground/soil contact: 50mm. Add 10-15mm in coastal areas.",
+      "source": "ecp_codes.json - CMD-003"
+    },
+    {
+      "id": "FAQ-004",
+      "category": "estimation",
+      "question_ar": "ما تكلفة بناء فيلا 300م2؟",
+      "question_en": "What is the estimated cost to build a 300m2 villa?",
+      "keywords": ["تكلفة فيلا", "كم تكلف فيلا", "سعر بناء فيلا", "villa cost", "build villa"],
+      "answer_ar": "تكلفة بناء فيلا 300م2 في مصر (مارس 2026):\n🏠 هيكل فقط (بدون تشطيب): 6,000-9,000 جنيه/م2 = 1.8 - 2.7 مليون جنيه\n🏠 تشطيب اقتصادي: 8,000-11,000 جنيه/م2 = 2.4 - 3.3 مليون جنيه\n🏠 تشطيب ممتاز: 12,000-20,000 جنيه/م2 = 3.6 - 6 مليون جنيه\n⚠️ هذه تقديرات تقريبية - استخدم أداة المقايسة للحصول على سعر دقيق.",
+      "answer_en": "300m2 villa construction cost in Egypt (March 2026): Bare shell: EGP 1.8-2.7M. Economic finish: 2.4-3.3M. Premium finish: 3.6-6M. Use the BOQ tool for accurate estimates.",
+      "source": "prices.json - construction_cost_benchmarks"
+    },
+    {
+      "id": "FAQ-005",
+      "category": "ecp_codes",
+      "question_ar": "ما نسبة حديد الأعمدة المطلوبة؟",
+      "question_en": "What is the required steel ratio for columns?",
+      "keywords": ["نسبة حديد أعمدة", "كمية حديد عمود", "column steel ratio", "steel ratio column"],
+      "answer_ar": "وفقاً لكود ECP 203، الأعمدة الخرسانية المسلحة:\n- الحد الأدنى لنسبة الحديد: 0.8% من مساحة مقطع العمود\n- الحد الأقصى: 6% من مساحة المقطع\n- المعدل الشائع عملياً: 1.5% إلى 3%\n\nمثال: عمود 30×30سم → مساحة = 900سم2\n- حديد أدنى = 900 × 0.008 = 7.2سم2 ≈ 4∅16\n- حديد معتاد = 900 × 0.02 = 18سم2 ≈ 6∅20",
+      "answer_en": "Per ECP 203: Column steel ratio min 0.8%, max 6% of cross-section. Typical practice: 1.5%-3%. Example: 30x30cm column → min 4∅16, typical 6∅20.",
+      "source": "ecp_codes.json - SR-001"
+    },
+    {
+      "id": "FAQ-006",
+      "category": "estimation",
+      "question_ar": "كم كيلو حديد في متر مكعب خرسانة؟",
+      "question_en": "How many kg of rebar per m3 of concrete?",
+      "keywords": ["كمية حديد", "وزن حديد", "rebar per m3", "steel per concrete", "kg rebar"],
+      "answer_ar": "معدلات الحديد في الخرسانة (قاعدة عملية):\n- البلاطات الصماء: 12-18 كج/م2 (أو 50-80 كج/م3 خرسانة)\n- الكمرات: 120-200 كج/م3 خرسانة\n- الأعمدة: 150-250 كج/م3 خرسانة\n- الأساسات العصبية: 80-120 كج/م3 خرسانة",
+      "answer_en": "Typical rebar rates: Slabs 12-18 kg/m2 or 50-80 kg/m3. Beams: 120-200 kg/m3. Columns: 150-250 kg/m3. Raft foundations: 80-120 kg/m3.",
+      "source": "ecp_codes.json - SR-006, SR-007"
+    },
+    {
+      "id": "FAQ-007",
+      "category": "pricing",
+      "question_ar": "ما أجر المهندس المشرف على الموقع؟",
+      "question_en": "What is the salary for a resident site engineer?",
+      "keywords": ["أجر مهندس", "راتب مهندس", "مشرف موقع", "engineer salary", "site engineer"],
+      "answer_ar": "راتب المهندس المشرف المقيم في مصر (مارس 2026):\n- مهندس حديث التخرج (0-3 سنوات): 8,000 - 12,000 جنيه/شهر\n- مهندس متوسط الخبرة (3-7 سنوات): 12,000 - 18,000 جنيه/شهر\n- مهندس خبير (+7 سنوات): 18,000 - 35,000 جنيه/شهر\nتختلف الأرقام حسب الشركة والموقع والمشروع.",
+      "answer_en": "Resident engineer salary in Egypt (March 2026): Fresh graduate: 8-12k EGP/month. Mid-level (3-7y): 12-18k. Senior (+7y): 18-35k EGP/month.",
+      "source": "prices.json - labor_rates.lab_eng"
+    },
+    {
+      "id": "FAQ-008",
+      "category": "ecp_codes",
+      "question_ar": "ما أقل سُمك للبلاطة الخرسانية؟",
+      "question_en": "What is the minimum slab thickness?",
+      "keywords": ["سمك بلاطة", "سمك أرضية", "slab thickness", "minimum slab"],
+      "answer_ar": "وفقاً لكود ECP 203:\n- البلاطة الصماء: بحر ÷ 30 (لا يقل عن 12سم)\n- جدول سريع:\n  • بحر 4م → 13-15سم\n  • بحر 5م → 16-18سم\n  • بحر 6م → 18-22سم\n  • بحر 7م → 23-25سم\n- البلاطة الهوردي: مناسبة للبحور 4-7م",
+      "answer_en": "Per ECP 203: Solid slab: span/30 (min 12cm). Quick reference: 4m span→13-15cm, 5m→16-18cm, 6m→18-22cm, 7m→23-25cm. Hollow block slab suitable for 4-7m spans.",
+      "source": "ecp_codes.json - SLB-001"
+    },
+    {
+      "id": "FAQ-009",
+      "category": "mep",
+      "question_ar": "ما تكلفة أعمال الكهرباء لفيلا 200م2؟",
+      "question_en": "What is the electrical works cost for a 200m2 villa?",
+      "keywords": ["تكلفة كهرباء", "سعر كهرباء", "electrical cost", "villa electrical", "كهرباء فيلا"],
+      "answer_ar": "تكلفة أعمال الكهرباء لفيلا 200م2 (مارس 2026):\n- نطاق السعر: 180,000 - 280,000 جنيه\n- المتوسط: 230,000 جنيه تقريباً\n- أو بالمتر: 900 - 1,400 جنيه/م2 (للتشطيب الكامل)\n\nيشمل: لوحة التوزيع + كابلات + مقابس + إضاءة + تأريض\nلا يشمل: الأجهزة الكهربائية (لمبات تزيين، ثريات)",
+      "answer_en": "Electrical works for 200m2 villa (March 2026): EGP 180,000-280,000 (avg 230,000). Or 900-1,400 EGP/m2 for full finish. Includes: DB panel, cables, outlets, lighting, earthing.",
+      "source": "prices.json - mep"
+    },
+    {
+      "id": "FAQ-010",
+      "category": "estimation",
+      "question_ar": "كيف أحسب كمية الطوب المطلوبة؟",
+      "question_en": "How do I calculate the required number of bricks?",
+      "keywords": ["حساب طوب", "كمية طوب", "brick calculation", "how many bricks"],
+      "answer_ar": "حساب كمية الطوب الأحمر:\n\nللحائط 25سم (طولي): \n• عدد الطوب = مساحة الحائط × 65 طوبة/م2\n\nللحائط 12.5سم (أفقي): \n• عدد الطوب = مساحة الحائط × 32 طوبة/م2\n\nمثال: حائط 5م × 3م = 15م2\n• طولي 25سم: 15 × 65 = 975 طوبة ≈ ألف طوبة\n• يُضاف 10-15% للفاقد والكسر",
+      "answer_en": "Brick quantity calculation: 25cm wall (lengthways): area × 65 bricks/m2. 12.5cm wall (flatways): area × 32 bricks/m2. Add 10-15% for wastage. Example: 5x3m wall (25cm): 15 × 65 = 975 bricks.",
+      "source": "حسابات هندسية معيارية"
+    }
+  ]
+}

@@ -1,0 +1,285 @@
+import json
+import re
+from typing import Dict, Any, List
+from ai_engine.cost_engine import get_cost_engine
+
+# ─── Project Type Intelligence ────────────────────────────────────────────────
+PROJECT_TYPE_HINTS = {
+    "villa": {
+        "ar": "فيلا سكنية",
+        "rooms": ["مدخل رئيسي", "صالة معيشة", "صالة طعام", "مطبخ", "غرفة نوم رئيسية", "حمام"],
+        "style_note": "Connected interior spaces with garden and driveway access."
+    },
+    "apartment": {
+        "ar": "شقة سكنية",
+        "rooms": ["ردهة", "صالة", "مطبخ مفتوح", "غرفة نوم"],
+        "style_note": "Compact layout, all rooms accessible from a central corridor."
+    },
+    "warehouse": {
+        "ar": "مستودع",
+        "rooms": ["مبنى رئيسي مفتوح", "مكتب إداري", "حمامات", "غرفة كهرباء"],
+        "style_note": "Large open span, high clearance, wide loading doors."
+    },
+    "mosque": {
+        "ar": "مسجد",
+        "rooms": ["صحن", "حرم الصلاة للرجال", "حرم الصلاة للنساء", "وضوء رجال", "وضوء نساء", "مكتب الإمام"],
+        "style_note": "Qibla wall facing Mecca, ablution areas near entrance, dome over prayer hall."
+    },
+    "steel": {
+        "ar": "هيكل معدني",
+        "rooms": ["بلاطة إنشائية", "مخزن", "غرفة تحكم"],
+        "style_note": "Steel portal frame structure, IPE columns and beams on regular grid."
+    },
+    "office": {
+        "ar": "مبنى إداري",
+        "rooms": ["ردهة استقبال", "مكاتب مفتوحة", "قاعة اجتماعات", "مكتب مدير", "حمامات"],
+        "style_note": "Open plan office, glass partitions, central corridor."
+    }
+}
+
+def detect_project_type(prompt: str, specialty: str) -> str:
+    """Detect project type from user prompt and specialty."""
+    prompt_lower = prompt.lower()
+    if "معدن" in specialty or "steel" in specialty.lower() or "metal" in specialty.lower():
+        return "steel"
+    if any(w in prompt_lower for w in ["فيلا", "villa", "منزل", "بيت", "house"]):
+        return "villa"
+    if any(w in prompt_lower for w in ["شقة", "apartment", "flat"]):
+        return "apartment"
+    if any(w in prompt_lower for w in ["مستودع", "مخزن", "warehouse", "factory", "مصنع"]):
+        return "warehouse"
+    if any(w in prompt_lower for w in ["مسجد", "mosque", "جامع"]):
+        return "mosque"
+    if any(w in prompt_lower for w in ["مكتب", "office", "إداري", "admin"]):
+        return "office"
+    return "villa"  # Default
+
+
+def smart_parse(data: Any) -> Dict[str, list]:
+    """Parse AI output (new room-based schema + legacy wall schema) into standardized format."""
+    walls, openings, furniture, labels, rooms = [], [], [], [], []
+
+    # Handle string inputs (extract JSON)
+    if isinstance(data, str):
+        try:
+            match = re.search(r'(\{.*\}|\[.*\])', data, re.DOTALL)
+            if match:
+                data = json.loads(match.group(1))
+            else:
+                return {"walls": [], "openings": [], "furniture": [], "labels": [], "rooms": [], "project_info": {}}
+        except Exception:
+            return {"walls": [], "openings": [], "furniture": [], "labels": [], "rooms": [], "project_info": {}}
+
+    project_info = {}
+
+    if isinstance(data, dict):
+        project_info = {
+            "title": data.get("project_title", data.get("title", "")),
+            "style": data.get("style", ""),
+            "total_area": data.get("total_area_m2", 0),
+            "floors": data.get("floors", 1),
+            "project_type": data.get("project_type", ""),
+        }
+
+        # ── NEW SCHEMA: rooms list ──────────────────────────────────
+        if "rooms" in data and isinstance(data["rooms"], list):
+            rooms = data["rooms"]
+            # Convert rooms to walls + labels for legacy rendering
+            for room in rooms:
+                rx = float(room.get("x_m", room.get("x", 0))) * 100
+                ry = float(room.get("y_m", room.get("y", 0))) * 100
+                rw = float(room.get("width_m", room.get("w", 4))) * 100
+                rh = float(room.get("height_m", room.get("h", 4))) * 100
+                rname = room.get("name", "Room")
+                rtype = room.get("type", "room").lower()
+                wall_thick = 20  # 20cm walls
+
+                # Room boundary walls
+                walls.extend([
+                    {"x": rx, "y": ry, "w": rw, "h": wall_thick, "is_exterior": room.get("walls", {}).get("south") == "exterior", "room": rname},
+                    {"x": rx, "y": ry + rh - wall_thick, "w": rw, "h": wall_thick, "is_exterior": room.get("walls", {}).get("north") == "exterior", "room": rname},
+                    {"x": rx, "y": ry, "w": wall_thick, "h": rh, "is_exterior": room.get("walls", {}).get("west") == "exterior", "room": rname},
+                    {"x": rx + rw - wall_thick, "y": ry, "w": wall_thick, "h": rh, "is_exterior": room.get("walls", {}).get("east") == "exterior", "room": rname},
+                ])
+
+                # Doors in this room
+                for door in room.get("doors", []):
+                    d_wall = door.get("wall", "south")
+                    d_pos = float(door.get("position", 0.5))
+                    d_w = float(door.get("width_m", 1.0)) * 100
+                    if d_wall in ["south", "north"]:
+                        dy = ry if d_wall == "south" else ry + rh - wall_thick
+                        openings.append({"name": "Door", "type": "door", "x": rx + (rw * d_pos) - d_w/2, "y": dy, "w": d_w, "h": wall_thick, "swing": door.get("swing", 90)})
+                    else:
+                        dx = rx if d_wall == "west" else rx + rw - wall_thick
+                        openings.append({"name": "Door", "type": "door", "x": dx, "y": ry + (rh * d_pos) - d_w/2, "w": wall_thick, "h": d_w, "swing": door.get("swing", 90)})
+
+                # Windows in this room
+                for win in room.get("windows", []):
+                    w_wall = win.get("wall", "north")
+                    w_pos = float(win.get("position", 0.5))
+                    w_w = float(win.get("width_m", 1.2)) * 100
+                    if w_wall in ["south", "north"]:
+                        wy = ry if w_wall == "south" else ry + rh - wall_thick
+                        openings.append({"name": "Window", "type": "window", "x": rx + (rw * w_pos) - w_w/2, "y": wy, "w": w_w, "h": wall_thick})
+                    else:
+                        wx = rx if w_wall == "west" else rx + rw - wall_thick
+                        openings.append({"name": "Window", "type": "window", "x": wx, "y": ry + (rh * w_pos) - w_w/2, "w": wall_thick, "h": w_w})
+
+                # Room label at center
+                labels.append({"text": rname, "x": rx + rw/2, "y": ry + rh/2, "area_m2": round((rw/100)*(rh/100), 1)})
+
+                # Room-specific furniture
+                if rtype in ["kitchen", "مطبخ"]:
+                    furniture.append({"name": "Kitchen Counter", "type": "kitchen", "x": rx + wall_thick, "y": ry + wall_thick, "w": rw - wall_thick*2, "h": 60})
+                elif "bed" in rtype or "نوم" in rtype:
+                    furniture.append({"name": "Bed", "type": "bed", "x": rx + wall_thick + 20, "y": ry + wall_thick + 20, "w": 160, "h": 200})
+
+        # ── LEGACY SCHEMA: direct walls/openings/furniture ──────────
+        else:
+            for k in ["walls", "openings", "furniture", "labels"]:
+                if k in data and isinstance(data[k], list):
+                    if k == "walls": walls.extend(data[k])
+                    elif k == "openings": openings.extend(data[k])
+                    elif k == "furniture": furniture.extend(data[k])
+                    elif k == "labels": labels.extend(data[k])
+
+        # Special elements (pool, greenery, steel grid)
+        for item in data.get("special_elements", []):
+            furniture.append(item)
+
+    # Handle pool / greenery from furniture list
+    for f in data.get("furniture", []) if isinstance(data, dict) else []:
+        if not any(x.get("name") == f.get("name") for x in furniture):
+            furniture.append(f)
+
+    return {
+        "walls": walls,
+        "openings": openings,
+        "furniture": furniture,
+        "labels": labels,
+        "rooms": rooms,
+        "project_info": project_info
+    }
+
+
+def generate_layout_from_prompt(
+    prompt: str,
+    specialty: str,
+    style_3d: str,
+    bed_count: int,
+    bath_count: int,
+    balcony_count: int,
+    floor_count: int,
+    landscaping: bool,
+    pool_opt: bool,
+    creative_mode: bool
+) -> tuple[Dict[str, list], str, bool]:
+    """
+    Calls the AI engine with a highly detailed architectural/engineering prompt.
+    Returns parsed rooms data, raw response, and fallback flag.
+    """
+    engine = get_cost_engine()
+    proj_type = detect_project_type(prompt, specialty)
+    proj_hints = PROJECT_TYPE_HINTS.get(proj_type, PROJECT_TYPE_HINTS["villa"])
+
+    creative_instruction = ""
+    if creative_mode:
+        creative_instruction = "Be visionary and innovative — use organic shapes, curved corridors, double-height spaces, and avant-garde spatial arrangements."
+
+    is_steel = proj_type == "steel"
+    steel_note = ""
+    if is_steel:
+        steel_note = """
+STEEL STRUCTURE RULES:
+- Use a structural grid of 6m x 6m bays minimum
+- Include: portal frames, IPE columns, purlins, and bracing
+- Mark all rooms as structural spans (no load-bearing internal walls)
+- Add "steel_grid_spacing_m" field to each room
+"""
+
+    ai_prompt = f"""You are a Senior Licensed Architect and Structural Engineer with 20 years of experience.
+
+PROJECT BRIEF:
+- Project Type: {proj_hints["ar"]} ({proj_type})
+- Specialty: {specialty}
+- Style/Finishes: {style_3d}
+- Floors: {floor_count}
+- Bedrooms: {bed_count}
+- Bathrooms: {bath_count}
+- Balconies: {balcony_count}
+- Pool: {"YES - design the pool with realistic dimensions" if pool_opt else "No"}
+- Landscaping: {"YES - include garden, driveway, trees" if landscaping else "Minimal"}
+- Style Notes: {proj_hints["style_note"]}
+- Expected Key Rooms (mandatory): {", ".join(proj_hints["rooms"])}
+- Engineer's Specific Request: {prompt if prompt else "Standard layout"}
+{steel_note}
+{creative_instruction}
+
+CRITICAL RULES:
+1. ALL coordinates and dimensions MUST BE IN METERS (not cm, not pixels).
+2. Minimum room size: 10 m² (no tiny rooms).
+3. Rooms must NOT overlap — ensure proper adjacency.
+4. Exterior walls should form a coherent building footprint.
+5. Every room MUST have at least 1 door. Main rooms must have windows.
+6. The total building footprint should be realistic for the project type.
+
+Return ONLY a valid JSON object (no markdown, no explanation) with this EXACT structure:
+{{
+  "project_title": "Project Name",
+  "project_type": "{proj_type}",
+  "style": "{style_3d}",
+  "floors": {floor_count},
+  "total_area_m2": <realistic_number>,
+  "rooms": [
+    {{
+      "name": "Room Name in Arabic and English",
+      "type": "living|bedroom|bathroom|kitchen|corridor|garage|pool|garden|office|hall|steel_bay",
+      "x_m": <x_origin_in_meters>,
+      "y_m": <y_origin_in_meters>,
+      "width_m": <width_in_meters>,
+      "height_m": <depth_in_meters>,
+      "walls": {{
+        "north": "exterior|interior|shared",
+        "south": "exterior|interior|shared",
+        "east": "exterior|interior|shared",
+        "west": "exterior|interior|shared"
+      }},
+      "doors": [
+        {{"wall": "south|north|east|west", "position": 0.5, "width_m": 1.0, "swing": 90}}
+      ],
+      "windows": [
+        {{"wall": "north|east", "position": 0.3, "width_m": 1.5}}
+      ],
+      "finish_floor": "Marble|Tile|Wood|Concrete|Steel Grating",
+      "finish_walls": "Paint|Wallpaper|Stone|Glass|Metal cladding",
+      "ceiling_height_m": 3.0
+    }}
+  ],
+  "special_elements": [
+    {{"name": "Swimming Pool", "type": "pool", "x": 20, "y": -5, "w": 10, "h": 5}},
+    {{"name": "Garden", "type": "greenery", "x": -8, "y": 0, "w": 7, "h": 15}}
+  ]
+}}
+
+GENERATE AT LEAST {max(bed_count + bath_count + 4, 8)} ROOMS. Make it architecturally coherent and realistic.
+"""
+
+    # 1. Try Groq
+    res, err = engine._call_groq(ai_prompt, expect_json=True)
+    raw_response = str(res)
+    fallback_used = False
+
+    # 2. Fallback to Gemini
+    if not res or (isinstance(res, dict) and "error" in res) or (isinstance(res, str) and len(res) < 100):
+        res, err = engine._call_gemini_text(ai_prompt, expect_json=True)
+        fallback_used = True
+        raw_response = str(res)
+
+    parsed = smart_parse(res)
+
+    # Validate: need at least 3 walls to be useful
+    if len(parsed.get("walls", [])) < 3 and len(parsed.get("rooms", [])) < 2:
+        parsed["walls"] = []  # Force algorithmic fallback in the view
+
+    return parsed, raw_response, fallback_used

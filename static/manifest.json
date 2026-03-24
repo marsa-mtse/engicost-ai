@@ -1,0 +1,57 @@
+{
+  "name": "EngiCost AI | المنصة الهندسية الذكية",
+  "short_name": "EngiCost",
+  "description": "المنصة الهندسية الذكية لحساب التكاليف والمقايسات والمخططات والذكاء الاصطناعي",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#020617",
+  "theme_color": "#0ea5e9",
+  "lang": "ar",
+  "scope": "/",
+  "categories": ["productivity", "business", "utilities"],
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "لوحة تحكم EngiCost AI"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "لوحة التحكم",
+      "short_name": "Dashboard",
+      "url": "/?page=dashboard",
+      "description": "الذهاب للوحة التحكم مباشرة"
+    },
+    {
+      "name": "مقايسة جديدة",
+      "short_name": "BOQ",
+      "url": "/?page=boq",
+      "description": "إنشاء مقايسة جديدة"
+    },
+    {
+      "name": "الرسم الهندسي",
+      "short_name": "Drawing",
+      "url": "/?page=drafting",
+      "description": "فتح محرك الرسم الذكي"
+    }
+  ],
+  "prefer_related_applications": false
+}

@@ -1,0 +1,92 @@
+{
+  "templates": [
+    {
+      "id": "villa_modern_1",
+      "name_ar": "فيلا مودرن متكاملة (تصميم 1)",
+      "name_en": "Modern Integrated Villa (Design 1)",
+      "type": "villa",
+      "style": "Modern",
+      "default_width": 1200,
+      "default_height": 1000,
+      "layout": {
+        "project_title": "Modern Villa Template 1",
+        "floors": 2,
+        "walls": [
+          {"x": 0, "y": 0, "w": 20, "h": 1000, "is_exterior": true},
+          {"x": 0, "y": 0, "w": 1200, "h": 20, "is_exterior": true},
+          {"x": 1200, "y": 0, "w": 20, "h": 1000, "is_exterior": true},
+          {"x": 0, "y": 1000, "w": 1220, "h": 20, "is_exterior": true},
+          
+          {"x": 0, "y": 400, "w": 400, "h": 20},
+          {"x": 400, "y": 0, "w": 20, "h": 400},
+          {"x": 600, "y": 400, "w": 600, "h": 20},
+          {"x": 800, "y": 0, "w": 20, "h": 400},
+          {"x": 600, "y": 400, "w": 20, "h": 600}
+        ],
+        "openings": [
+          {"name": "Main Entrance", "type": "door", "x": 500, "y": 1000, "w": 180, "h": 20},
+          {"name": "Room Door 1", "type": "door", "x": 400, "y": 200, "w": 20, "h": 100},
+          {"name": "Room Door 2", "type": "door", "x": 800, "y": 200, "w": 20, "h": 100},
+          {"name": "Window Hall", "type": "window", "x": 1000, "y": 0, "w": 150, "h": 20},
+          {"name": "Window Living", "type": "window", "x": 1000, "y": 1000, "w": 200, "h": 20}
+        ],
+        "furniture": [
+          {"name": "Swimming Pool", "type": "pool", "x": 1300, "y": 200, "w": 500, "h": 800},
+          {"name": "Garden/Landscaping", "type": "greenery", "x": -400, "y": 100, "w": 300, "h": 800},
+          {"name": "Dining Table", "type": "furniture", "x": 700, "y": 500, "w": 150, "h": 100},
+          {"name": "Living Sofa set", "type": "furniture", "x": 900, "y": 600, "w": 200, "h": 200},
+          {"name": "Kitchen Island", "type": "furniture", "x": 200, "y": 600, "w": 100, "h": 250}
+        ],
+        "labels": [
+          {"text": "Master Bedroom", "x": 200, "y": 200},
+          {"text": "Guest Bedroom", "x": 1000, "y": 200},
+          {"text": "Kitchen", "x": 200, "y": 700},
+          {"text": "Living & Dining", "x": 900, "y": 700},
+          {"text": "Main Entrance Hall", "x": 500, "y": 800}
+        ]
+      }
+    },
+    {
+      "id": "apartment_classic_1",
+      "name_ar": "شقة سكنية كلاسيك (3 غرف)",
+      "name_en": "Classic Apartment (3 Beds)",
+      "type": "apartment",
+      "style": "Classic",
+      "default_width": 1000,
+      "default_height": 800,
+      "layout": {
+        "project_title": "Classic Apartment Template 1",
+        "floors": 1,
+        "walls": [
+          {"x": 0, "y": 0, "w": 20, "h": 800, "is_exterior": true},
+          {"x": 0, "y": 0, "w": 1000, "h": 20, "is_exterior": true},
+          {"x": 1000, "y": 0, "w": 20, "h": 800, "is_exterior": true},
+          {"x": 0, "y": 800, "w": 1020, "h": 20, "is_exterior": true},
+          
+          {"x": 300, "y": 0, "w": 20, "h": 400},
+          {"x": 600, "y": 0, "w": 20, "h": 400},
+          {"x": 0, "y": 400, "w": 1000, "h": 20},
+          {"x": 700, "y": 400, "w": 20, "h": 400}
+        ],
+        "openings": [
+          {"name": "Main Door", "type": "door", "x": 1000, "y": 500, "w": 20, "h": 120},
+          {"name": "Bed 1 Door", "type": "door", "x": 100, "y": 400, "w": 100, "h": 20},
+          {"name": "Bed 2 Door", "type": "door", "x": 400, "y": 400, "w": 100, "h": 20},
+          {"name": "Bed 3 Door", "type": "door", "x": 700, "y": 100, "w": 20, "h": 100},
+          {"name": "Balcony Window", "type": "window", "x": 0, "y": 500, "w": 20, "h": 200}
+        ],
+        "furniture": [
+          {"name": "Balcony Plants", "type": "greenery", "x": -100, "y": 500, "w": 80, "h": 200},
+          {"name": "Living TV Area", "type": "furniture", "x": 800, "y": 600, "w": 150, "h": 80}
+        ],
+        "labels": [
+          {"text": "Bedroom 1", "x": 150, "y": 200},
+          {"text": "Bedroom 2", "x": 450, "y": 200},
+          {"text": "Master Bedroom", "x": 800, "y": 200},
+          {"text": "Reception & Salon", "x": 350, "y": 600},
+          {"text": "Kitchen & Dining", "x": 850, "y": 600}
+        ]
+      }
+    }
+  ]
+}
