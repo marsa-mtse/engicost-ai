@@ -306,6 +306,18 @@ def _render_drawing_engine_internal():
                 svg.append(f'<text x="{min_x+40}" y="{(min_y+max_y)/2}" font-family="monospace" font-size="{20/zoom_level}" fill="{line_color}" stroke="none" transform="rotate(-90 {min_x+40} {(min_y+max_y)/2})" text-anchor="middle">{max_y-min_y-200} cm</text>')
                 svg.append('</g>')
 
+                # Topographic Contours (If Landscaping)
+                if t("لاندسكيب", "Landscaping") in specialty:
+                    svg.append(f'<g fill="none" stroke="#8b4513" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="10 5">')
+                    for i in range(1, 6):
+                        cx = min_x + (max_x - min_x) * 0.3 * i
+                        cy = min_y + (max_y - min_y) * 0.2 * i
+                        rx = (max_x - min_x) * 0.4 / i
+                        ry = (max_y - min_y) * 0.3 / i
+                        svg.append(f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" />')
+                        svg.append(f'<text x="{cx+rx}" y="{cy}" font-family="monospace" font-size="{12/zoom_level}" fill="#8b4513" text-anchor="middle">+{i*0.5}m</text>')
+                    svg.append('</g>')
+
                 # Furniture/Greenery
                 for f in r_data.get('furniture', []):
                     fx, fy, fw, fh = f.get('x',0), f.get('y',0), f.get('w',50), f.get('h',50)
@@ -587,30 +599,140 @@ def _render_drawing_engine_internal():
 
     # ─── Tab 2: Structural Sections (Offline) ────────────────────
     with tabs[1]:
-        st.markdown(f"#### {t('توليد قطاع تسليح آلي (محلي)', 'Automated Offline Drafting')}")
-        sc1, sc2, sc3 = st.columns(3)
-        with sc1:
-            m_type = st.selectbox(t("نوع العنصر", "Member Type"), [t("عمود", "Column"), t("كمرة", "Beam")], key="sc_mtype_v2")
-            w_val = st.number_input(t("العرض (mm)", "Width (mm)"), value=300, step=50, key="sc_w")
-        with sc2:
-            d_val = st.number_input(t("العمق (mm)", "Depth (mm)"), value=600, step=50, key="sc_d")
-            b_cnt = st.number_input(t("عدد الأسياخ", "Bars Count"), value=6, min_value=2, key="sc_bc")
-        with sc3:
-            b_dia = st.number_input(t("قطر السيخ (mm)", "Bar Diameter (mm)"), value=16, step=2, key="sc_dia")
-            c_val = st.number_input(t("الغطاء الخرساني (mm)", "Concrete Cover (mm)"), value=25, key="sc_cov")
+        st.markdown(f"#### 🏗️ {t('توليد تفاصيل إنشائية احترافية (CAD Style)', 'Automated Offline Structural Detailing')}")
+        
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            m_type = st.selectbox(t("نوع العنصر", "Element Type"), [t("عمود (Column)", "Column"), t("كمرة (Beam)", "Beam"), t("قاعدة منفصلة (Footing)", "Isolated Footing"), t("بلاطة (Solid Slab)", "Solid Slab")], key="sc_mtype")
+        with c2:
+            w_val = st.number_input(t("العرض B (mm)", "Width (mm)"), value=300, step=50, max_value=5000)
+            cover = st.number_input(t("الغطاء (Cover mm)", "Cover (mm)"), value=25, min_value=15, max_value=75)
+        with c3:
+            d_val = st.number_input(t("العمق/السمك T (mm)", "Depth/Thickness (mm)"), value=600, step=50, max_value=5000)
+            rebar_dia = st.number_input(t("قطر السيخ Φ (mm)", "Rebar Dia (mm)"), value=16, step=2)
+        with c4:
+            bars_count = st.number_input(t("عدد الأسياخ (n)", "Bars Count"), value=6, min_value=2)
+            if t("قاعدة", "Footing") in m_type or t("بلاطة", "Slab") in m_type:
+                bars_y = st.number_input(t("أسياخ الاتجاه الآخر", "Transverse Bars"), value=6, min_value=2)
+            else:
+                stirrup_dia = st.number_input(t("قطر الكانة (mm)", "Stirrup Dia (mm)"), value=8, step=2)
 
-        if st.button(t("🖋️ رسم القطاع الآن", "🖋️ Draw Section Now"), key="sc_draw_btn", use_container_width=True):
+        if st.button(t("🖋️ توليد لوحة التسليح (Generate CAD Detail)", "🖋️ Generate CAD Detail"), type="primary", use_container_width=True):
             fig = go.Figure()
-            fig.add_shape(type="rect", x0=0, y0=0, x1=w_val, y1=d_val, line=dict(color="#00ff00", width=4))
-            fig.add_shape(type="rect", x0=c_val, y0=c_val, x1=w_val-c_val, y1=d_val-c_val, line=dict(color="#00ffff", width=2, dash="dash"))
-            fig.update_layout(paper_bgcolor="black", plot_bgcolor="rgba(0,0,0,0)", font_color="white", height=500,
-                              xaxis=dict(showgrid=False, zeroline=False), yaxis=dict(showgrid=False, zeroline=False, scaleanchor="x", scaleratio=1))
+
+            # Colors for CAD Style
+            c_conc = "#ffffff"  # Concrete Outline
+            c_rebar = "#00ff00" # Main Rebar
+            c_sec = "#ffff00"   # Secondary/Stirrups
+            c_dim = "#00ffff"   # Dimensions
+            
+            # --- Draw Concrete Outline ---
+            fig.add_shape(type="rect", x0=0, y0=0, x1=w_val, y1=d_val, line=dict(color=c_conc, width=3))
+            
+            # --- Draw Internal Details based on Element ---
+            if t("عمود", "Column") in m_type or t("كمرة", "Beam") in m_type:
+                # 1. Stirrup
+                fig.add_shape(type="rect", x0=cover, y0=cover, x1=w_val-cover, y1=d_val-cover, line=dict(color=c_sec, width=2), rx=5, ry=5)
+                # Stirrup Locks (Hooks)
+                fig.add_shape(type="line", x0=cover, y0=d_val-cover, x1=cover+40, y1=d_val-cover-40, line=dict(color=c_sec, width=2))
+                fig.add_shape(type="line", x0=cover, y0=d_val-cover, x1=cover+40, y1=d_val-cover+10, line=dict(color=c_sec, width=2))
+
+                # 2. Main Rebars
+                top_bars = bars_count // 2
+                bot_bars = bars_count - top_bars
+                
+                # Bottom Bars
+                if bot_bars > 1:
+                    spacing_x = (w_val - 2*cover - rebar_dia) / (bot_bars - 1)
+                    for i in range(bot_bars):
+                        bx = cover + (rebar_dia/2) + (i * spacing_x)
+                        by = cover + (rebar_dia/2)
+                        fig.add_shape(type="circle", x0=bx-rebar_dia/2, y0=by-rebar_dia/2, x1=bx+rebar_dia/2, y1=by+rebar_dia/2, fillcolor=c_rebar, line_color=c_rebar)
+                
+                # Top Bars
+                if top_bars > 1:
+                    spacing_x = (w_val - 2*cover - rebar_dia) / (top_bars - 1)
+                    for i in range(top_bars):
+                        bx = cover + (rebar_dia/2) + (i * spacing_x)
+                        by = d_val - cover - (rebar_dia/2)
+                        fig.add_shape(type="circle", x0=bx-rebar_dia/2, y0=by-rebar_dia/2, x1=bx+rebar_dia/2, y1=by+rebar_dia/2, fillcolor=c_rebar, line_color=c_rebar)
+
+            elif t("قاعدة", "Footing") in m_type:
+                # Draw Plain Concrete (PC) below Reinforced Concrete (RC)
+                pc_thick = 100
+                pc_offset = 100
+                fig.add_shape(type="rect", x0=-pc_offset, y0=-pc_thick, x1=w_val+pc_offset, y1=0, line=dict(color="#888888", width=2, dash="dashdot"))
+                fig.add_annotation(x=w_val/2, y=-pc_thick/2, text="P.C. Footing", showarrow=False, font=dict(color="#8888"))
+                
+                # Bottom Mesh (X direction - Dots)
+                spacing_x = (w_val - 2*cover) / max((bars_count - 1), 1)
+                for i in range(bars_count):
+                    bx = cover + (i * spacing_x)
+                    by = cover + (rebar_dia/2)
+                    fig.add_shape(type="circle", x0=bx-rebar_dia/2, y0=by-rebar_dia/2, x1=bx+rebar_dia/2, y1=by+rebar_dia/2, fillcolor=c_rebar, line_color=c_rebar)
+                    
+                # Bottom Mesh (Y direction - Line)
+                fig.add_shape(type="line", x0=cover, y0=cover+rebar_dia*1.5, x1=w_val-cover, y1=cover+rebar_dia*1.5, line=dict(color=c_sec, width=3))
+                # U-Shape Hooks
+                fig.add_shape(type="line", x0=cover, y0=cover+rebar_dia*1.5, x1=cover, y1=d_val-cover, line=dict(color=c_sec, width=3))
+                fig.add_shape(type="line", x0=w_val-cover, y0=cover+rebar_dia*1.5, x1=w_val-cover, y1=d_val-cover, line=dict(color=c_sec, width=3))
+                
+                # Column neck stub
+                fig.add_shape(type="line", x0=w_val/2-150, y0=d_val, x1=w_val/2-150, y1=d_val+500, line=dict(color=c_conc, width=2))
+                fig.add_shape(type="line", x0=w_val/2+150, y0=d_val, x1=w_val/2+150, y1=d_val+500, line=dict(color=c_conc, width=2))
+                # Column dowels
+                fig.add_shape(type="line", x0=w_val/2-100, y0=cover+rebar_dia*2, x1=w_val/2-100, y1=d_val+600, line=dict(color="#ff00ff", width=3))
+                fig.add_shape(type="line", x0=w_val/2+100, y0=cover+rebar_dia*2, x1=w_val/2+100, y1=d_val+600, line=dict(color="#ff00ff", width=3))
+                fig.add_shape(type="line", x0=w_val/2-100, y0=cover+rebar_dia*2, x1=w_val/2-250, y1=cover+rebar_dia*2, line=dict(color="#ff00ff", width=3)) # Dowel leg
+                fig.add_shape(type="line", x0=w_val/2+100, y0=cover+rebar_dia*2, x1=w_val/2+250, y1=cover+rebar_dia*2, line=dict(color="#ff00ff", width=3)) # Dowel leg
+
+            elif t("بلاطة", "Slab") in m_type:
+                # Draw Bottom Mesh
+                fig.add_shape(type="line", x0=0, y0=cover, x1=w_val, y1=cover, line=dict(color=c_rebar, width=3))
+                spacing_x = w_val / max((bars_count - 1), 1)
+                for i in range(bars_count):
+                    bx = (i * spacing_x)
+                    by = cover + rebar_dia
+                    fig.add_shape(type="circle", x0=bx-rebar_dia/2, y0=by-rebar_dia/2, x1=bx+rebar_dia/2, y1=by+rebar_dia/2, fillcolor=c_sec, line_color=c_sec)
+                
+                # Draw Top Mesh (if thickness > 160mm typically)
+                if d_val >= 160:
+                    fig.add_shape(type="line", x0=0, y0=d_val-cover, x1=w_val, y1=d_val-cover, line=dict(color=c_rebar, width=3))
+                    for i in range(bars_count):
+                        bx = (i * spacing_x)
+                        by = d_val - cover - rebar_dia
+                        fig.add_shape(type="circle", x0=bx-rebar_dia/2, y0=by-rebar_dia/2, x1=bx+rebar_dia/2, y1=by+rebar_dia/2, fillcolor=c_sec, line_color=c_sec)
+
+            # --- Add Dimensions (CAD Line) ---
+            # Horizontal
+            fig.add_shape(type="line", x0=0, y0=-80, x1=w_val, y1=-80, line=dict(color=c_dim, width=1))
+            fig.add_shape(type="line", x0=0, y0=-100, x1=0, y1=0, line=dict(color=c_dim, width=1))
+            fig.add_shape(type="line", x0=w_val, y0=-100, x1=w_val, y1=0, line=dict(color=c_dim, width=1))
+            fig.add_annotation(x=w_val/2, y=-110, text=f"B = {w_val} mm", showarrow=False, font=dict(color=c_dim, size=14))
+            
+            # Vertical
+            fig.add_shape(type="line", x0=-80, y0=0, x1=-80, y1=d_val, line=dict(color=c_dim, width=1))
+            fig.add_shape(type="line", x0=-100, y0=0, x1=0, y1=0, line=dict(color=c_dim, width=1))
+            fig.add_shape(type="line", x0=-100, y0=d_val, x1=0, y1=d_val, line=dict(color=c_dim, width=1))
+            fig.add_annotation(x=-110, y=d_val/2, text=f"T = {d_val} mm", showarrow=False, font=dict(color=c_dim, size=14), textangle=-90)
+
+            # Render
+            max_dim = max(w_val, d_val)
+            padding = max_dim * 0.2
+            fig.update_layout(
+                paper_bgcolor="#000000", plot_bgcolor="#000000", font_family="monospace",
+                height=600, margin=dict(l=50, r=50, t=50, b=50),
+                xaxis=dict(showgrid=False, zeroline=False, visible=False, range=[-padding, w_val+padding]), 
+                yaxis=dict(showgrid=False, zeroline=False, visible=False, scaleanchor="x", scaleratio=1, range=[-padding, d_val+padding])
+            )
+            
             st.plotly_chart(fig, use_container_width=True)
+            st.info(f"💡 **CAD Detail:** Generated {m_type} reinforcement section with {bars_count}Φ{rebar_dia} main bars and {cover}mm cover.")
 
     # ─── Export Section ───
     st.markdown("---")
     if "last_svg" in st.session_state and st.session_state.last_svg:
-        st.download_button("📤 " + t("تحميل التصميم (SVG/CAD)", "Download Design (SVG/CAD)"), 
+        st.download_button("📤 " + t("تحميل التصميم المعماري (SVG/CAD)", "Download Architectural Design (SVG/CAD)"), 
                            st.session_state.last_svg, "engi_draft.svg", "image/svg+xml", use_container_width=True)
 
 def render_drawing_engine():

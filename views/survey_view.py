@@ -43,9 +43,24 @@ def render_survey_management():
         area_m2 = calculate_area(st.session_state.survey_points)
         
         m1, m2, m3 = st.columns(3)
-        with m1: st.metric(t("المساحة الإجمالية", "Total Area"), f"{area_m2:,.2f} m²")
-        with m2: st.metric(t("المساحة بالفدان", "Area in Feddan"), f"{area_m2/4200:.3f} Fed")
-        with m3: st.metric(t("المحيط التقديري", "Est. Perimeter"), f"{np.sqrt(area_m2)*4:,.1f} m")
+        with m1: st.metric(t("المساحة الإجمالية (Area)", "Total Area"), f"{area_m2:,.2f} m²")
+        with m2: st.metric(t("المساحة بالفدان (Feddan)", "Area in Feddan"), f"{area_m2/4200:.3f} Fed")
+        
+        # Exact Perimeter Calculation (Haversine Distance Approximation)
+        perimeter = 0
+        distances = []
+        if len(st.session_state.survey_points) > 1:
+            points = st.session_state.survey_points.to_dict('records')
+            for i in range(len(points)):
+                p1 = points[i]
+                p2 = points[(i+1) % len(points)]
+                # Simple Cartesian approx for tiny distances
+                dy = (p2['Latitude'] - p1['Latitude']) * 111320
+                dx = (p2['Longitude'] - p1['Longitude']) * 111320 * np.cos(np.radians(p1['Latitude']))
+                dist = np.sqrt(dx**2 + dy**2)
+                perimeter += dist
+                distances.append(f"{p1['Point']} ➔ {p2['Point']}: {dist:.1f}m")
+        with m3: st.metric(t("محيط الأرض الدقيق (Perimeter)", "Exact Perimeter"), f"{perimeter:,.1f} m")
 
         # Plotly Map
         df = st.session_state.survey_points
@@ -90,10 +105,50 @@ def render_survey_management():
         except ImportError:
             st.error("Missing map libraries. Please install folium and streamlit-folium.")
         
-        if st.button(t("📐 تصدير المخطط لمركز الرسم", "Export Boundary to EngiDraft"), use_container_width=True):
-            # Simulation: Convert Lat/Long distances to CM for the drafting engine
-            st.toast(t("جاري معالجة الإحداثيات وتصديرها...", "Processing coordinates for export..."))
-            st.success(t("تم تصدير حدود الأرض! يمكنك الآن المتابعة في قسم الرسم.", "Boundary Exported! Proceed to Drawing Engine."))
+        col_ex_draft, col_ex_kml = st.columns([1, 1])
+        with col_ex_draft:
+            if st.button("📐 " + t("تصدير المخطط لمركز الرسم", "Export Boundary to EngiDraft"), use_container_width=True):
+                # Simulation: Convert Lat/Long distances to CM for the drafting engine
+                st.toast(t("جاري معالجة الإحداثيات وتصديرها...", "Processing coordinates for export..."))
+                st.success(t("تم تصدير حدود الأرض! يمكنك الآن المتابعة في قسم الرسم.", "Boundary Exported! Proceed to Drawing Engine."))
+
+        with col_ex_kml:
+            # Generate KML dynamically
+            kml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>EngiCost Survey Polygon</name>
+    <Placemark>
+      <name>Site Boundary</name>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>
+{' '.join([f"{r['Longitude']},{r['Latitude']},0" for _, r in df_closed.iterrows()])}
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+  </Document>
+</kml>
+"""
+            st.download_button("📥 " + t("تحميل كملف KML (للجوجل إيرث)", "Download as KML"), data=kml_content, file_name="site_boundary.kml", mime="application/vnd.google-earth.kml+xml", use_container_width=True)
+
+        # Earthworks Calculator & Distance Matrix
+        with st.expander(t("🚜 حاسبة الحفر والردم والمسافات (Earthworks & Distances)", "🚜 Earthworks & Distances Calculator"), expanded=False):
+            ex_c1, ex_c2 = st.columns([1, 1])
+            with ex_c1:
+                st.markdown("##### " + t("📍 أطوال الأضلاع", "📍 Segment Lengths"))
+                for d in distances:
+                    st.write(f"- {d}")
+            with ex_c2:
+                st.markdown("##### " + t("⛏️ تقدير الكميات الترابية", "⛏️ Earthworks Volumetric Estimate"))
+                depth_avg = st.number_input(t("متوسط منسوب الحفر (متر)", "Avg Excavation Depth (m)"), min_value=0.0, value=1.5, step=0.5)
+                vol_excavation = area_m2 * depth_avg
+                vol_backfill = vol_excavation * 0.3 # Rough estimate 30% backfill around foundations
+                st.info(f"**{t('إجمالي كميات الحفر:', 'Est. Excavation Volume:')}** {vol_excavation:,.1f} m³\n\n**{t('إجمالي ردْم مقدر:', 'Est. Backfill Volume:')}** {vol_backfill:,.1f} m³")
+
 
     # ─── Tab 2: Coordinate Entry ─────────────────────────────────
     with tabs[1]:

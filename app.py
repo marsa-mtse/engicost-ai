@@ -235,96 +235,102 @@ def render_app():
     # translate="no" is a high-level hint to browsers to skip this div during auto-translation
     st.markdown('<div class="animate-up" translate="no">', unsafe_allow_html=True)
     
-    if current_key == "dashboard":
-        from views import dashboard_view
-        dashboard_view.render_dashboard()
-    elif current_key == "admin":
-        from views import admin_view
-        admin_view.render_admin_panel()
-    elif current_key == "market":
-        from views import forecasting_view
-        forecasting_view.render_forecasting()
-    elif current_key == "tender":
-        from views import tender_hub_view
-        tender_hub_view.render_tender_hub()
-    elif current_key == "assistant":
-        from views import ai_assistant_view
-        ai_assistant_view.render_ai_assistant()
-    elif current_key == "blueprint":
-        from views import blueprint_view
-        blueprint_view.render_blueprint_analysis()
-    elif current_key == "fidic":
-        from views import fidic_scanner_view
-        fidic_scanner_view.render_fidic_scanner()
-    elif current_key == "fidic_letters":
-        from views import fidic_letters_view
-        fidic_letters_view.render_fidic_generator()
-    elif current_key == "boq":
-        from views import boq_view
-        boq_view.render_boq_pricing()
-    elif current_key == "compare":
-        from views import compare_view
-        compare_view.render_boq_comparison()
-    elif current_key == "profit":
-        from views import profit_calculator_view
-        profit_calculator_view.render_profit_calculator()
-    elif current_key == "structural":
-        from views import structural_calc_view
-        structural_calc_view.render_structural_calc()
-    elif current_key == "bbs":
-        from views import bbs_view
-        bbs_view.render_bbs_assistant()
-    elif current_key == "mep":
-        from views import mep_view
-        mep_view.render_mep_systems()
-    elif current_key == "gantt":
-        from views import gantt_view
-        gantt_view.render_gantt_progress()
-    elif current_key == "drafting":
-        from views import drawing_engine_view
-        drawing_engine_view.render_drawing_engine()
-    elif current_key == "survey":
-        from views import survey_view
-        survey_view.render_survey_management()
-    elif current_key == "ipc":
-        from views import ipc_view
-        ipc_view.render_ipc_invoice()
-    elif current_key == "suppliers":
-        from views import suppliers_view
-        suppliers_view.render_suppliers()
-    elif current_key == "qaqc":
-        from views import qaqc_view
-        qaqc_view.render_qaqc()
-    elif current_key == "collab":
-        from views import collaboration_view
-        collaboration_view.render_collaboration()
-    elif current_key == "workspace":
-        from views import workspace_view
-        workspace_view.render_workspace()
-    elif current_key == "billing":
-        from views import billing_view
-        billing_view.render_billing()
-    elif current_key == "inventory":
-        from views import inventory_view
-        inventory_view.render_inventory_management()
-    elif current_key == "finance":
-        from views import finance_view
-        finance_view.render_financial_analysis()
-    elif current_key == "hr":
-        from views import hr_view
-        hr_view.render_hr_management()
-    elif current_key == "assets":
-        from views import assets_view
-        assets_view.render_assets_management()
-    elif current_key == "settings":
-        from views import settings_view
-        settings_view.render_settings()
-    elif current_key == "legal":
-        from views import legal_view
-        legal_view.render_legal()
-    elif current_key == "brain":
-        from views import ai_brain_view
-        ai_brain_view.render_ai_brain()
+    try:
+        if current_key == "dashboard":
+            from views import dashboard_view
+            dashboard_view.render_dashboard()
+        elif current_key == "admin":
+            from views import admin_view
+            admin_view.render_admin_panel()
+        elif current_key == "market":
+            from views import forecasting_view
+            forecasting_view.render_forecasting()
+        elif current_key == "tender":
+            from views import tender_hub_view
+            tender_hub_view.render_tender_hub()
+        elif current_key == "assistant":
+            from views import ai_assistant_view
+            ai_assistant_view.render_ai_assistant()
+        elif current_key == "blueprint":
+            from views import blueprint_view
+            blueprint_view.render_blueprint_analysis()
+        elif current_key == "fidic":
+            from views import fidic_scanner_view
+            fidic_scanner_view.render_fidic_scanner()
+        elif current_key == "fidic_letters":
+            from views import fidic_letters_view
+            fidic_letters_view.render_fidic_generator()
+        elif current_key == "boq":
+            from views import boq_view
+            boq_view.render_boq_pricing()
+        elif current_key == "compare":
+            from views import compare_view
+            compare_view.render_boq_comparison()
+        elif current_key == "profit":
+            from views import profit_calculator_view
+            profit_calculator_view.render_profit_calculator()
+        elif current_key == "structural":
+            from views import structural_calc_view
+            structural_calc_view.render_structural_calc()
+        elif current_key == "bbs":
+            from views import bbs_view
+            bbs_view.render_bbs_assistant()
+        elif current_key == "mep":
+            from views import mep_view
+            mep_view.render_mep_systems()
+        elif current_key == "gantt":
+            from views import gantt_view
+            gantt_view.render_gantt_progress()
+        elif current_key == "drafting":
+            from views import drawing_engine_view
+            drawing_engine_view.render_drawing_engine()
+        elif current_key == "survey":
+            from views import survey_view
+            survey_view.render_survey_management()
+        elif current_key == "ipc":
+            from views import ipc_view
+            ipc_view.render_ipc_invoice()
+        elif current_key == "suppliers":
+            from views import suppliers_view
+            suppliers_view.render_suppliers()
+        elif current_key == "qaqc":
+            from views import qaqc_view
+            qaqc_view.render_qaqc()
+        elif current_key == "collab":
+            from views import collaboration_view
+            collaboration_view.render_collaboration()
+        elif current_key == "workspace":
+            from views import workspace_view
+            workspace_view.render_workspace()
+        elif current_key == "billing":
+            from views import billing_view
+            billing_view.render_billing()
+        elif current_key == "inventory":
+            from views import inventory_view
+            inventory_view.render_inventory_management()
+        elif current_key == "finance":
+            from views import finance_view
+            finance_view.render_financial_analysis()
+        elif current_key == "hr":
+            from views import hr_view
+            hr_view.render_hr_management()
+        elif current_key == "assets":
+            from views import assets_view
+            assets_view.render_assets_management()
+        elif current_key == "settings":
+            from views import settings_view
+            settings_view.render_settings()
+        elif current_key == "legal":
+            from views import legal_view
+            legal_view.render_legal()
+        elif current_key == "brain":
+            from views import ai_brain_view
+            ai_brain_view.render_ai_brain()
+    except Exception as e:
+        st.error(t("عذراً، حدث خطأ غير متوقع أثناء معالجة هذه الصفحة.", "An unexpected error occurred while processing this page."))
+        with st.expander(t("تفاصيل فنية (Technical Details)", "Technical Details")):
+            st.error(str(e))
+        st.info(t("يرجى المحاولة مرة أخرى أو العودة للوحة القيادة.", "Please try again or return to the dashboard."))
 
     st.markdown('</div>', unsafe_allow_html=True)
 
