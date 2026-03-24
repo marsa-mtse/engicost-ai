@@ -23,46 +23,109 @@ def render_login_signup():
         except Exception as e:
             st.markdown(f'<h1 style="text-align:center;">🏗️ EngiCost AI</h1>', unsafe_allow_html=True)
 
-    # Hero Section — inline colors to avoid CSS variable unavailability before auth
+    # Hero Section - V3.1 Modern SaaS Design
     st.markdown(f"""
-        <div style="text-align:center; padding: 3rem 1rem; background: radial-gradient(circle at center, rgba(14,165,233,0.18) 0%, transparent 70%); border-radius: 40px; margin-bottom: 2rem;">
-            <div style="font-size:4rem; margin-bottom:0.5rem;">🏗️</div>
-            <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 1rem;
-                       background: linear-gradient(135deg, #e2e8f0 0%, #0ea5e9 60%, #6366f1 100%);
-                       -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                EngiCost AI
-            </h1>
-            <h2 style="font-size:clamp(1.1rem,2vw,1.5rem); font-weight:600; color:#cbd5e1; margin-bottom:0.75rem;">
-                {t("ثورة الذكاء الاصطناعي في الهندسة الإنشائية", "AI Revolution in Construction Engineering")}
-            </h2>
-            <p style="color:#94a3b8; font-size:clamp(0.9rem, 1.5vw, 1.15rem); max-width:750px; margin:0 auto; line-height:1.7; font-weight:400;">
-                {t("المنصة المتكاملة لتحليل المخططات، تسعير المقايسات، ورسم الهندسي بالذكاء الاصطناعي وإدارة المشاريع بدقة متناهية.",
-                   "The integrated platform for blueprint analysis, AI-powered BOQ pricing, drawing engine, and project management.")}
+        <style>
+        @keyframes gradientFade {{
+            0% {{ background-position: 0% 50%; }}
+            50% {{ background-position: 100% 50%; }}
+            100% {{ background-position: 0% 50%; }}
+        }}
+        .hero-container {{
+            text-align:center; 
+            padding: 4.5rem 2rem; 
+            background: linear-gradient(-45deg, rgba(14,165,233,0.08), rgba(99,102,241,0.12), rgba(16,185,129,0.08));
+            background-size: 400% 400%;
+            animation: gradientFade 15s ease infinite;
+            border-radius: 35px; 
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }}
+        .hero-title {{
+            font-size: clamp(2.8rem, 6vw, 4.8rem); 
+            font-weight: 900; 
+            line-height: 1.1; 
+            margin-bottom: 1.2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #38bdf8 50%, #818cf8 100%);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 4px 25px rgba(56, 189, 248, 0.25);
+        }}
+        .hero-subtitle {{
+            font-size:clamp(1.2rem,2.5vw,1.8rem); 
+            font-weight:600; 
+            color:#f8fafc; 
+            margin-bottom:1.5rem;
+            letter-spacing: 0.5px;
+        }}
+        .hero-text {{
+            color:#94a3b8; 
+            font-size:clamp(1.05rem, 1.5vw, 1.25rem); 
+            max-width:850px; 
+            margin:0 auto; 
+            line-height:1.8; 
+            font-weight:400;
+        }}
+        .tag-pill {{
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 0.6rem 1.4rem;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: default;
+        }}
+        .tag-pill:hover {{
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -10px rgba(0,0,0,0.3);
+        }}
+        </style>
+        
+        <div class="hero-container">
+            <div style="font-size:5rem; margin-bottom:1.5rem; text-shadow: 0 10px 30px rgba(0,0,0,0.3);">🏗️</div>
+            <h1 class="hero-title">EngiCost AI</h1>
+            <h2 class="hero-subtitle">{t("مستقبل الهندسة الإنشائية والذكاء الاصطناعي", "The Future of Construction & AI")}</h2>
+            <p class="hero-text">
+                {t("منصتك السحابية الشاملة لتحويل المخططات إلى تسعير دقيق، استخراج كميات، ورسم معماري بالذكاء الاصطناعي في ثوانٍ معدودة.", 
+                   "Your all-in-one cloud platform to transform blueprints into precise pricing, BOQ, and AI architectural drawings in seconds.")}
             </p>
-            <div style="display:flex; justify-content:center; gap:1.5rem; margin-top:1.5rem; flex-wrap:wrap;">
-                <span style="background:rgba(14,165,233,0.15); border:1px solid rgba(14,165,233,0.3); padding:0.4rem 1rem; border-radius:999px; color:#7dd3fc; font-size:0.85rem;">🌍 {t("متجر العطاءات الحي", "Live Tender Hub")}</span>
-                <span style="background:rgba(99,102,241,0.15); border:1px solid rgba(99,102,241,0.3); padding:0.4rem 1rem; border-radius:999px; color:#a5b4fc; font-size:0.85rem;">📐 {t("مهندس الرسم الذكي", "AI Drawing Engine")}</span>
-                <span style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); padding:0.4rem 1rem; border-radius:999px; color:#6ee7b7; font-size:0.85rem;">🛰️ {t("الرفع المساحي GIS", "GIS Survey")}</span>
-                <span style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); padding:0.4rem 1rem; border-radius:999px; color:#fcd34d; font-size:0.85rem;">💰 {t("تسعير آلي للمقايسات", "Auto BOQ Pricing")}</span>
+            <div style="display:flex; justify-content:center; gap:1.2rem; margin-top:2.5rem; flex-wrap:wrap;">
+                <span class="tag-pill" style="color:#7dd3fc; border-color: rgba(14,165,233,0.3);">🌍 {t("متجر العطاءات الحي", "Live Tender Hub")}</span>
+                <span class="tag-pill" style="color:#a5b4fc; border-color: rgba(99,102,241,0.3);">📐 {t("مخططات SVG ذكية", "Smart SVG Drawings")}</span>
+                <span class="tag-pill" style="color:#6ee7b7; border-color: rgba(16,185,129,0.3);">🛰️ {t("تحليل مساحي GIS", "GIS Survey Analysis")}</span>
+                <span class="tag-pill" style="color:#fcd34d; border-color: rgba(245,158,11,0.3);">💰 {t("تسعير BOQ آلي", "Auto BOQ Pricing")}</span>
             </div>
         </div>
     """, unsafe_allow_html=True)
 
-    # Main Auth & Info (Converted to Scrolling Landing Page)
+    # Auth System (Tabbed Interface for Modern UX)
     st.markdown("<br>", unsafe_allow_html=True)
     
-    if True: # Was tab_auth
-        col_auth_l, col_auth_r = st.columns(2)
-
-        with col_auth_l:
-            st.markdown(f"""
-            <div class="glass-card animate-up" style="padding: 2rem;">
-                <h3 style="margin-top:0; color:var(--accent-primary);">{t('تسجيل الدخول', 'Login')}</h3>
-                <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.5rem;">{t('أهلاً بك مجدداً في مستقبلك الهندسي', 'Welcome back to your engineering future')}</p>
-            """, unsafe_allow_html=True)
-            login_user = st.text_input(t("اسم المستخدم", "Username"), key="login_user")
-            login_pass = st.text_input(t("كلمة المرور", "Password"), type="password", key="login_pass")
-            if st.button(t("دخول", "Login"), use_container_width=True, key="btn_login"):
+    auth_col1, auth_col2, auth_col3 = st.columns([1, 2, 1])
+    with auth_col2:
+        st.markdown(f"""
+        <div style="text-align:center; margin-bottom:2rem;">
+            <h2 style="margin:0; font-size: 2.2rem; font-weight:800; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{t("بوابتك للهندسة الذكية", "Your Gateway to Smart Engineering")}</h2>
+            <p style="color:#94a3b8; font-size:1.05rem; margin-top:0.8rem;">{t("قم بتسجيل الدخول للبدء أو أنشئ حساباً جديداً مجاناً", "Login to begin or create a new free account")}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        tab_login, tab_signup = st.tabs(["🔑 " + t("تسجيل الدخول", "Login"), "✨ " + t("حساب جديد", "Sign Up")])
+        
+        # --- LOGIN TAB ---
+        with tab_login:
+            st.markdown(f'<div class="glass-card animate-up" style="padding: 2.5rem; border-top: 4px solid #38bdf8; border-radius: 0 0 20px 20px; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);">', unsafe_allow_html=True)
+            login_user = st.text_input(t("👤 اسم المستخدم", "👤 Username"), key="login_user")
+            login_pass = st.text_input(t("🔒 كلمة المرور", "🔒 Password"), type="password", key="login_pass")
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button(t("تسجيل الدخول", "Login"), use_container_width=True, type="primary", key="btn_login"):
                 if login_user and login_pass:
                     user = authenticate_user(login_user, login_pass)
                     if user:
@@ -75,171 +138,194 @@ def render_login_signup():
                         st.success(f"Welcome {user.username}!")
                         st.rerun()
                     else: st.error(t("بيانات غير صحيحة", "Invalid credentials"))
-                else: st.warning(t("أدخل البيانات", "Enter credentials"))
+                else: st.warning(t("أدخل البيانات للمتابعة", "Enter credentials to proceed"))
             st.markdown('</div>', unsafe_allow_html=True)
 
-        with col_auth_r:
-            st.markdown(f"""
-            <div class="glass-card animate-up" style="padding: 2rem; border-color: var(--accent-secondary);">
-                <h3 style="margin-top:0; color:var(--accent-secondary);">{t('إنشاء حساب', 'Sign Up')}</h3>
-                <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.5rem;">{t('انضم لأذكى المهندسين في المنطقة', 'Join the smartest engineers in the region')}</p>
-            """, unsafe_allow_html=True)
-            new_user = st.text_input(t("اسم المستخدم", "Username"), key="reg_user")
-            new_email = st.text_input(t("البريد الإلكتروني", "Email"), key="reg_email")
-            new_pass = st.text_input(t("كلمة المرور", "Password"), type="password", key="reg_pass")
-            if st.button(t("ابدأ الآن مجاناً", "Start Free Now"), use_container_width=True, key="btn_signup"):
+        # --- SIGNUP TAB ---
+        with tab_signup:
+            st.markdown(f'<div class="glass-card animate-up" style="padding: 2.5rem; border-top: 4px solid #818cf8; border-radius: 0 0 20px 20px; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);">', unsafe_allow_html=True)
+            new_user = st.text_input(t("👤 اسم المستخدم", "👤 Username"), key="reg_user")
+            new_email = st.text_input(t("📧 البريد الإلكتروني", "📧 Email"), key="reg_email")
+            new_pass = st.text_input(t("🔒 كلمة المرور", "🔒 Password"), type="password", key="reg_pass")
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button(t("🌟 ابدأ تجربتك المجانية الآن", "🌟 Start Your Free Trial Now"), use_container_width=True, type="primary", key="btn_signup"):
                 if new_user and new_email and new_pass:
                     user = create_user(new_user, new_email, new_pass)
-                    if user: st.success(t("تم التسجيل بنجاح!", "Registered successfully!"))
+                    if user: st.success(t("تم التسجيل بنجاح! يرجى الانتقال لتبويب الدخول.", "Registered successfully! Switch to Login tab."))
                     else: st.error(t("المستخدم موجود بالفعل", "User already exists"))
                 else: st.warning(t("يرجى ملء كافة الحقول", "Please fill all fields"))
             st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("<br><hr><br>", unsafe_allow_html=True)
     if True: # Was tab_about
-        # ── Stats Bar via st.columns ──────────────────────────────
+        # ── Global Stats (SaaS Header) ──────────────────────────────
+        st.markdown(
+            f'<h3 style="color:#e2e8f0;text-align:center;margin-bottom:2rem; font-size:2rem;">'
+            f'🚀 {t("منصة متكاملة بقدرات فائقة", "Integrated Platform with Superpowers")}</h3>',
+            unsafe_allow_html=True
+        )
+        
         stat_data = [
-            ("V1.6.0", t("الإصدار الحالي", "Current Version")),
-            ("8+",     t("وحدات ذكية",    "AI Modules")),
-            ("100%",   t("مجاني للبدء",   "Free to Start")),
-            ("24/7",   t("دعم مستمر",     "Always On")),
+            ("⚡ V2.0", t("الإصدار الأقوى", "The Most Powerful Release")),
+            ("🧠 10+", t("محركات ذكاء اصطناعي", "AI Precision Engines")),
+            ("🌍 40+", t("عطاء يومي", "Daily Regional Tenders")),
+            ("⏱️ 90%", t("توفير في الوقت", "Time Savings")),
         ]
         s1, s2, s3, s4 = st.columns(4)
         for scol, (val, lbl) in zip([s1, s2, s3, s4], stat_data):
             with scol:
                 st.markdown(
-                    f'<div style="background:rgba(14,165,233,0.08);border:1px solid rgba(14,165,233,0.25);'
-                    f'border-radius:16px;padding:1rem;text-align:center;margin-bottom:0.5rem;">'
-                    f'<div style="font-size:1.8rem;font-weight:900;color:#0ea5e9;">{val}</div>'
-                    f'<div style="font-size:0.78rem;color:#94a3b8;margin-top:4px;">{lbl}</div>'
+                    f'<div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);'
+                    f'border-radius:24px; padding:1.5rem; text-align:center; margin-bottom:1.5rem; transition: transform 0.3s;" onmouseover="this.style.transform=\'translateY(-5px)\';" onmouseout="this.style.transform=\'none\';">'
+                    f'<div style="font-size:2rem; font-weight:900; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{val}</div>'
+                    f'<div style="font-size:0.85rem; color:#94a3b8; margin-top:8px; font-weight:500;">{lbl}</div>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
 
-        # ── Feature Grid (8 cards — 2 rows of 4) ─────────────────
-        st.markdown(
-            f'<h3 style="color:#e2e8f0;text-align:center;margin:1.5rem 0 1rem;">⚡ '
-            f'{t("كل ما تحتاجه في مكان واحد", "Everything You Need in One Place")}</h3>',
-            unsafe_allow_html=True
-        )
+        # ── Feature Bento Grid ─────────────────
+        st.markdown("<br>", unsafe_allow_html=True)
         features = [
-            ("📐", t("مهندس الرسم الذكي", "AI Drawing Engine"),
-             t("أكتب وصفاً بالعربية واحصل على مخطط SVG مع BOQ مسعَّر فوراً.",
-               "Describe a building in Arabic, get an SVG plan + priced BOQ instantly.")),
-            ("💰", t("تسعير آلي للمقايسات", "Auto BOQ Pricing"),
-             t("ارفع Excel أو PDF ونسعّر الكميات بأسعار السوق الحية.",
-               "Upload Excel/PDF — we price quantities with live market rates.")),
-            ("🌍", t("متجر العطاءات الحي", "Live Tender Hub"),
-             t("40+ عطاء يومياً من مصر والخليج مع فلترة بالدولة.",
-               "40+ daily tenders from Egypt & Gulf with country filters.")),
-            ("🛰️", t("رؤية حاسوبية GIS", "Computer Vision GIS"),
-             t("ارفع صورة فضائية والذكاء الاصطناعي يكتشف التربة والمباني.",
-               "Upload a satellite image — AI identifies terrain & structures.")),
-            ("📅", t("Gantt Chart تلقائي", "Auto Gantt Chart"),
-             t("جدول زمني تنفيذي يتولد تلقائياً من بنود مقايستك.",
-               "Project schedule auto-generated from your BOQ items.")),
-            ("📄", t("تقرير PDF شامل", "Full PDF Report"),
-             t("صدّر رسم + مقايسة + ملخص ذكي في ملف PDF احترافي.",
-               "Export drawing + BOQ + AI summary as a professional PDF.")),
-            ("🧠", t("ملخص AI التنفيذي", "AI Executive Summary"),
-             t("ضغطة زر واحدة — ملخص يشمل النطاق والتكاليف والجدول.",
-               "One click — summary covering scope, costs & timeline.")),
-            ("📊", t("S-Curve والتدفق النقدي", "S-Curve & Cash Flow"),
-             t("رسوم Plotly للإنجاز المخطط مقابل الفعلي والتدفق النقدي.",
-               "Plotly charts for planned vs actual & cash flow analysis.")),
+            ("📐", t("مهندس الرسم V3.0", "AI Drawing V3.0"),
+             t("وصفك النصي يتحول لمخطط معماري SVG دقيق مع تفاصيل الجدران والأبواب والتشطيبات.",
+               "Your text turns into a precise SVG architectural plan with true wall thickness and door swings.")),
+            ("💰", t("تسعير ذكي فوري", "Instant Smart Pricing"),
+             t("رفع جداول (Excel/PDF) وربطها أوتوماتيكياً بأسعار السوق الحقيقية لحظة بلحظة.",
+               "Upload BOQs to auto-match with live market rates instantly.")),
+            ("🌍", t("رادار العطاءات", "Tender Radar"),
+             t("أكثر من 40 عطاء جديد يومياً من مصر والخليج مقسمة ذكياً حسب الدولة والمجال.",
+               "40+ daily tenders from MENA, intelligently categorized by country.")),
+            ("🛰️", t("تحليل التربة GIS", "GIS Terrain Analysis"),
+             t("رؤية حاسوبية لتحليل الصور الفضائية واستخراج نسب المباني والنباتات والتربة.",
+               "Computer vision for satellite images to analyze structures vs vegetation.")),
+            ("📅", t("جدول زمني آلي", "Auto Gantt Chart"),
+             t("توليد جداول زمنية للإنشاءات تلقائياً بمجرد رفع بنود المشروع.",
+               "Automatically generate construction schedules from project items.")),
+            ("🧠", t("المستشار الرقمي", "AI Executive Advisor"),
+             t("تحليل شامل واقتراحات لتقليل التكاليف بضغطة زر.",
+               "Comprehensive analysis & cost-saving suggestions with one click.")),
         ]
-        card_style = (
-            'background:rgba(30,41,59,0.55);border:1px solid rgba(255,255,255,0.08);'
-            'border-radius:18px;padding:1.2rem;text-align:center;margin-bottom:0.5rem;'
+        
+        card_hover = (
+            'background:rgba(30,41,59,0.4);border:1px solid rgba(255,255,255,0.05);'
+            'border-radius:24px;padding:1.8rem;text-align:right;margin-bottom:1rem;'
+            'transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);'
+            'box-shadow: 0 10px 30px -10px rgba(0,0,0,0.2);'
         )
-        r1 = st.columns(4)
-        r2 = st.columns(4)
-        for i, (icon, title, desc) in enumerate(features):
-            col = (r1 + r2)[i]
-            with col:
-                html = (
-                    f'<div style="{card_style}">'
-                    f'<div style="font-size:2rem;margin-bottom:6px;">{icon}</div>'
-                    f'<div style="color:#0ea5e9;font-weight:700;font-size:0.85rem;margin-bottom:6px;">{title}</div>'
-                    f'<div style="color:#94a3b8;font-size:0.76rem;line-height:1.5;">{desc}</div>'
-                    f'</div>'
-                )
-                st.markdown(html, unsafe_allow_html=True)
+        # Using a 2x3 grid
+        for idx in range(0, 6, 2):
+            c1, c2 = st.columns(2)
+            with c1:
+                i, tlc, dsc = features[idx]
+                st.markdown(f"""
+                <div style="{card_hover}" onmouseover="this.style.background='rgba(30,41,59,0.8)'; this.style.transform='scale(1.02)';" onmouseout="this.style.background='rgba(30,41,59,0.4)'; this.style.transform='none';">
+                    <div style="font-size:3rem; margin-bottom:1rem; text-shadow: 0 0 20px rgba(14,165,233,0.5);">{i}</div>
+                    <h4 style="color:#e2e8f0; font-size:1.3rem; margin-bottom:0.5rem; font-weight:700;">{tlc}</h4>
+                    <p style="color:#94a3b8; font-size:0.95rem; line-height:1.6; margin:0;">{dsc}</p>
+                </div>
+                """, unsafe_allow_html=True)
+            with c2:
+                i, tlc, dsc = features[idx+1]
+                st.markdown(f"""
+                <div style="{card_hover}" onmouseover="this.style.background='rgba(30,41,59,0.8)'; this.style.transform='scale(1.02)';" onmouseout="this.style.background='rgba(30,41,59,0.4)'; this.style.transform='none';">
+                    <div style="font-size:3rem; margin-bottom:1rem; text-shadow: 0 0 20px rgba(99,102,241,0.5);">{i}</div>
+                    <h4 style="color:#e2e8f0; font-size:1.3rem; margin-bottom:0.5rem; font-weight:700;">{tlc}</h4>
+                    <p style="color:#94a3b8; font-size:0.95rem; line-height:1.6; margin:0;">{dsc}</p>
+                </div>
+                """, unsafe_allow_html=True)
 
-        # ── Pricing Plans via st.columns ──────────────────────────
+        # ── Pricing Plans (Neon SaaS UI) ──────────────────────────
+        st.markdown("<br><br>", unsafe_allow_html=True)
         st.markdown(
-            f'<h3 style="color:#e2e8f0;text-align:center;margin:2rem 0 1rem;">💎 '
-            f'{t("خطط الاشتراك", "Subscription Plans")}</h3>',
+            f'<h3 style="color:#e2e8f0;text-align:center;margin-bottom:3rem; font-size:2.2rem;">'
+            f'💎 {t("استثمر في مهندسك الرقمي الثوري", "Invest in your Revolutionary AI Engineer")}</h3>',
             unsafe_allow_html=True
         )
+        
         plans = [
-            ("🆓", t("مجاني", "Free"), "0", t("جنيه/شهر", "EGP/mo"),
-             [t("مخطط واحد/شهر", "1 Drawing/month"), t("مقايسة واحدة/شهر", "1 BOQ/month"),
-              t("لوحة التحكم", "Dashboard"), t("أسعار السوق", "Market Prices")],
-             "#64748b", False),
-            ("⚡", t("برو", "Pro"), "299", t("جنيه/شهر", "EGP/mo"),
-             [t("مخططات غير محدودة", "Unlimited Drawings"), t("مقايسات غير محدودة", "Unlimited BOQs"),
-              t("Gantt Chart", "Gantt Chart"), t("تصدير PDF/Excel", "PDF & Excel Export"),
-              t("متجر العطاءات كاملاً", "Full Tender Hub")],
-             "#0ea5e9", True),
-            ("🏛️", t("مؤسسي", "Enterprise"), "799", t("جنيه/شهر", "EGP/mo"),
-             [t("كل مميزات Pro", "All Pro Features"), t("مساحة عمل الشركة", "Company Workspace"),
-              t("دعم مخصص", "Dedicated Support"), t("CV GIS Analysis", "CV GIS Analysis"),
-              t("ملخص AI التنفيذي", "AI Executive Summary")],
-             "#6366f1", False),
+            ("🆓", t("الباقة المجانية", "Free Explorer"), "0", t("شهرياً", "mo"),
+             [t("1 تجربة محرك الرسم المتقدم", "1 Advanced SVG Drawing"), t("1 تحليل وتسعير مقايسة", "1 Auto BOQ Pricing"),
+              t("تصفح المتجر اليومي", "Browse Daily Tenders"), t("رؤية الأسعار اللحظية", "Live Market Prices View")],
+             "rgba(100,116,139,0.1)", "#94a3b8", False),
+             
+            ("⚡", t("الاحترافية برو", "Pro Engineer"), "299", t("جنيه/شهر", "EGP/mo"),
+             [t("توليد مخططات لا نهائي", "Unlimited Drawings"), t("تسعير ذكي لامحدود", "Unlimited Auto BOQ"),
+              t("واجهة الجدول الزمني", "Gantt Chart Engine"), t("تصدير دقيق للـ Excel & PDF", "Excel & PDF Exports"),
+              t("استعراض متجر العطاءات الشامل", "Full Access to Live Tender Hub")],
+             "linear-gradient(145deg, rgba(14,165,233,0.15), rgba(99,102,241,0.15))", "#38bdf8", True),
+             
+            ("🏛️", t("مؤسسات وشركات", "Enterprise"), "799", t("جنيه/شهر", "EGP/mo"),
+             [t("مميزات الباقة الاحترافية +", "All Pro Features +"), t("مساحات عمل للفرق الهندسية", "Team Workspaces"),
+              t("تحليل صور جوية عبر الـ GIS", "GIS Satellite Imagery CV"), t("تلخيص تفصيلي لملفات الـ DB", "Detailed DB Docs Summaries"),
+              t("دعم تقني مدار الساعة", "24/7 Priority Support")],
+             "rgba(99,102,241,0.1)", "#818cf8", False),
         ]
-        p1, p2, p3 = st.columns(3)
-        for pcol, (icon, pname, price, period, feats, color, popular) in zip([p1, p2, p3], plans):
+        
+        p1, p2, p3 = st.columns([1, 1.1, 1])
+        for pcol, (icon, pname, price, period, feats, bg, text_color, popular) in zip([p1, p2, p3], plans):
             with pcol:
-                border_color = color if popular else color + "55"
+                glow = "0 0 40px rgba(56,189,248,0.3)" if popular else "none"
+                border = "2px solid rgba(56,189,248,0.8)" if popular else "1px solid rgba(255,255,255,0.08)"
+                transform = "scale(1.05)" if popular else "scale(1)"
+                zindex = "10" if popular else "1"
+                
                 popular_badge = (
-                    f'<div style="background:{color};color:#fff;font-size:0.68rem;font-weight:800;'
-                    f'padding:2px 10px;border-radius:999px;display:inline-block;margin-bottom:6px;">'
-                    f'⭐ {t("الأكثر طلباً", "Most Popular")}</div><br>'
-                ) if popular else ""
+                    f'<div style="background:linear-gradient(90deg, #38bdf8, #818cf8); color:#fff; font-size:0.8rem; font-weight:800;'
+                    f'padding:4px 15px; border-radius:999px; display:inline-block; margin-bottom:15px; box-shadow: 0 4px 15px rgba(56,189,248,0.4);">'
+                    f'⭐ {t("الخيار المفضل للمهندسين", "Most Popular Choice")}</div><br>'
+                ) if popular else "<br><br>"
+                
                 feat_html = "".join(
-                    f'<div style="margin:5px 0;font-size:0.82rem;color:#cbd5e1;text-align:right;">✅ {f}</div>'
+                    f'<div style="margin:12px 0; font-size:0.95rem; color:#f8fafc; display:flex; gap:10px; align-items:center;">'
+                    f'<span style="color:{text_color}; font-size:1.2rem; font-weight:900;">✓</span> <span>{f}</span></div>'
                     for f in feats
                 )
+                
                 plan_html = (
-                    f'<div style="background:rgba(30,41,59,0.65);border:2px solid {border_color};'
-                    f'border-radius:20px;padding:1.5rem;text-align:center;min-height:280px;">'
-                    f'<div style="font-size:2rem;">{icon}</div>'
-                    f'<h4 style="color:{color};margin:6px 0;">{pname}</h4>'
+                    f'<div style="background:{bg}; border:{border}; border-radius:30px; padding:2.5rem; min-height:500px;'
+                    f'box-shadow: {glow}; transform: {transform}; position: relative; z-index: {zindex}; '
+                    f'backdrop-filter: blur(10px); transition: all 0.3s ease;">'
+                    f'<div style="text-align:center;">'
                     f'{popular_badge}'
-                    f'<div style="font-size:2rem;font-weight:900;color:#f8fafc;">{price}'
-                    f'<span style="font-size:0.8rem;color:#94a3b8;margin-right:4px;">{period}</span></div>'
-                    f'<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:10px 0;">'
+                    f'<div style="font-size:3.5rem; margin-bottom:10px; text-shadow: 0 10px 20px rgba(0,0,0,0.5);">{icon}</div>'
+                    f'<h4 style="color:#f8fafc; font-size:1.8rem; margin:0 0 10px 0; font-weight:800;">{pname}</h4>'
+                    f'<div style="font-size:4rem; font-weight:900; color:{text_color}; line-height:1; text-shadow: 0 0 20px {text_color}80;">{price}'
+                    f'<span style="font-size:1.2rem; color:#94a3b8; font-weight:500; margin-inline-start:5px;">{period}</span></div>'
+                    f'</div>'
+                    f'<div style="margin-top:2.5rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:2rem;">'
                     f'{feat_html}'
+                    f'</div>'
                     f'</div>'
                 )
                 st.markdown(plan_html, unsafe_allow_html=True)
 
         # ── What's New (Changelog) ────────────────────────────────
+        st.markdown("<br><br>", unsafe_allow_html=True)
         st.markdown(
-            f'<h3 style="color:#e2e8f0;text-align:center;margin:2rem 0 1rem;">🆕 '
-            f'{t("آخر التحديثات", "What\'s New")}</h3>',
+            f'<h3 style="color:#e2e8f0;text-align:center;margin:1rem 0 2rem; font-size:2rem;">🆕 '
+            f'{t("آخر التحديثات الجوهرية", "Latest Major Updates")}</h3>',
             unsafe_allow_html=True
         )
         cl1, cl2, cl3 = st.columns(3)
         changelog = [
-            (cl1, "#38bdf8", "V1.6.0",
-             t("لوحة التحكم الذكية", "Smart Dashboard"),
-             "Gantt Chart · PDF Export · AI Summary · Tender Alerts"),
-            (cl2, "#a78bfa", "V1.5.0",
-             t("الأتمتة الهندسية", "Engineering Automation"),
-             "Auto-Pricing BOQ · Computer Vision GIS · Country Filters"),
-            (cl3, "#34d399", "V1.4.0",
-             t("البيانات الحية", "Live Data"),
-             "Live Tender Hub · Folium Maps · KML Upload"),
+            (cl1, "#38bdf8", "V3.0",
+             t("محرك الرسم وتصميم الدخول", "Drawing Engine & UI Overhaul"),
+             t("SaaS Login Redesign · SVG 9-Layers · Auto Scaling", "SaaS Login Redesign · SVG 9-Layers · Auto Scaling")),
+            (cl2, "#a78bfa", "V2.5",
+             t("الأتمتة المعمارية الشاملة", "Architectural Automation"),
+             t("GIS Terrain CV · Smart Auto-Pricing · Dynamic Dashboard", "GIS Terrain CV · Smart Auto-Pricing · Dynamic Dashboard")),
+            (cl3, "#34d399", "V2.0",
+             t("البيانات الحية", "Live Data Engine"),
+             t("Live Tender Hub · Cost Market Rates · PDF Exports", "Live Tender Hub · Cost Market Rates · PDF Exports")),
         ]
         for col, clr, ver, title_cl, details in changelog:
             with col:
                 st.markdown(
-                    f'<div style="background:rgba(14,165,233,0.05);border:1px solid rgba(14,165,233,0.15);'
-                    f'border-radius:14px;padding:1rem;">'
-                    f'<div style="color:{clr};font-weight:700;margin-bottom:4px;">{ver} — {title_cl}</div>'
-                    f'<div style="color:#94a3b8;font-size:0.8rem;">{details}</div>'
+                    f'<div style="background:rgba(30,41,59,0.5); border:1px solid {clr}40; border-right:4px solid {clr};'
+                    f'border-radius:16px; padding:1.5rem; transition: all 0.3s ease;" onmouseover="this.style.transform=\'translateY(-3px)\'; this.style.boxShadow=\'0 10px 20px -10px {clr}80\';" onmouseout="this.style.transform=\'none\'; this.style.boxShadow=\'none\';">'
+                    f'<div style="color:{clr}; font-weight:800; font-size:1.1rem; margin-bottom:6px;">{ver} <span style="color:#f8fafc; font-weight:600;">— {title_cl}</span></div>'
+                    f'<div style="color:#94a3b8; font-size:0.85rem; line-height:1.5;">{details}</div>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
