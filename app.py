@@ -127,39 +127,47 @@ def render_app():
         st.session_state.force_market_refresh = False
 
     with st.sidebar:
-        # Premium Sidebar Header
+        # Premium Sidebar Header V4
         st.markdown(f"""
-        <div style="text-align: center; padding: 1rem 0;">
-            <div style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), transparent); 
-                        border: 1px solid var(--glass-border); border-radius: 15px; padding: 0.8rem;">
+        <div style="text-align: center; padding: 1.5rem 0 1rem 0;">
+            <div style="background: linear-gradient(145deg, rgba(15,23,42,0.6), rgba(30,41,59,0.8)); 
+                        border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.2);
+                        border-radius: 20px; padding: 1.2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.05);">
         """, unsafe_allow_html=True)
         
         try:
             st.image("assets/logo.png", use_container_width=True)
         except:
-            st.markdown(f'<h2 style="margin:0; font-size: 1.2rem; color: var(--accent-primary);">🏗️ EngiCost AI</h2>', unsafe_allow_html=True)
+            st.markdown(f'<h2 style="margin:0; font-size: 1.4rem; font-weight:800; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🏗️ EngiCost AI</h2>', unsafe_allow_html=True)
             
         st.markdown(f"""
-                <p style="margin:0; font-size: 0.6rem; color: var(--text-secondary); letter-spacing: 1.5px; text-transform: uppercase;">
+                <p style="margin:5px 0 0 0; font-size: 0.65rem; color: #94a3b8; letter-spacing: 2px; text-transform: uppercase;">
                     {t("حلول هندسية ذكية", "Smart Engineering Solutions")}
                 </p>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # User Info Card
+        # User Info Card V4
         st.markdown(f"""
-            <div style='padding: 10px; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:15px; background: rgba(255,255,255,0.03);'>
-                <p style='margin:0; font-size:0.8rem;'>👤 <b>{st.session_state.username}</b></p>
-                <p style='margin:0; font-size:0.75rem; color:var(--accent-primary);'>💎 {st.session_state.plan} Plan</p>
+            <div style='padding: 12px 15px; border-radius:16px; border:1px solid rgba(255,255,255,0.08); margin-bottom:20px; 
+                        background: linear-gradient(135deg, rgba(56,189,248,0.1) 0%, rgba(99,102,241,0.05) 100%);
+                        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); display: flex; align-items:center; justify-content: space-between;'>
+                <div>
+                    <p style='margin:0; font-size:0.85rem; color:#e2e8f0;'>👤 <b style='font-weight:600;'>{st.session_state.username}</b></p>
+                    <p style='margin:2px 0 0 0; font-size:0.75rem; color:#38bdf8; font-weight:500; letter-spacing: 0.5px;'>💎 {st.session_state.plan} Plan</p>
+                </div>
+                <div style='width:35px; height:35px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.1);'>
+                    <span style='font-size:1.2rem;'>👷</span>
+                </div>
             </div>
         """, unsafe_allow_html=True)
         
         from utils import is_stlite
         if is_stlite():
             st.markdown(f"""
-                <div style='margin-bottom:15px; padding:6px 12px; background:rgba(16, 185, 129, 0.1); border-radius:8px; border:1px solid var(--success); text-align:center;'>
-                    <span style='color:var(--success); font-weight:bold; font-size:0.75rem;'>🔒 {t("نسخة الموقع (أوفلاين)", "Site Edition (Offline Mode)")}</span>
+                <div style='margin-bottom:20px; padding:8px 15px; background:rgba(16, 185, 129, 0.15); border-radius:12px; border:1px solid rgba(16,185,129,0.3); text-align:center; box-shadow: 0 4px 15px rgba(16,185,129,0.2);'>
+                    <span style='color:#34d399; font-weight:700; font-size:0.8rem; letter-spacing:0.5px;'>🔒 {t("نسخة الموقع (أوفلاين)", "Site Edition (Offline)")}</span>
                 </div>
             """, unsafe_allow_html=True)
 

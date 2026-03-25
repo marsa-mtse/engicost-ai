@@ -23,72 +23,81 @@ def render_login_signup():
         except Exception as e:
             st.markdown(f'<h1 style="text-align:center;">🏗️ EngiCost AI</h1>', unsafe_allow_html=True)
 
-    # Hero Section - V3.1 Modern SaaS Design
+    # Hero Section - V4 Neo-Glassmorphism
     st.markdown(f"""
         <style>
-        @keyframes gradientFade {{
-            0% {{ background-position: 0% 50%; }}
-            50% {{ background-position: 100% 50%; }}
-            100% {{ background-position: 0% 50%; }}
+        @keyframes glowingHero {{
+            0% {{ background-position: 0% 50%; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 10px 30px -10px rgba(14, 165, 233, 0.3); }}
+            50% {{ background-position: 100% 50%; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 10px 40px -5px rgba(99, 102, 241, 0.4); }}
+            100% {{ background-position: 0% 50%; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), inset 0 10px 30px -10px rgba(14, 165, 233, 0.3); }}
         }}
         .hero-container {{
             text-align:center; 
-            padding: 4.5rem 2rem; 
-            background: linear-gradient(-45deg, rgba(14,165,233,0.08), rgba(99,102,241,0.12), rgba(16,185,129,0.08));
-            background-size: 400% 400%;
-            animation: gradientFade 15s ease infinite;
-            border-radius: 35px; 
-            margin-bottom: 3rem;
+            padding: 5rem 2rem; 
+            background: linear-gradient(135deg, rgba(14,165,233,0.05), rgba(99,102,241,0.08), rgba(16,185,129,0.05));
+            background-size: 200% 200%;
+            animation: glowingHero 10s ease infinite;
+            border-radius: 40px; 
+            margin-bottom: 4rem;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255,255,255,0.25);
+            backdrop-filter: blur(20px);
+        }}
+        .hero-container::before {{
+            content: '';
+            position: absolute; top:0; left:0; right:0; height:1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
         }}
         .hero-title {{
-            font-size: clamp(2.8rem, 6vw, 4.8rem); 
+            font-size: clamp(3rem, 7vw, 5.5rem); 
             font-weight: 900; 
-            line-height: 1.1; 
+            line-height: 1.05; 
             margin-bottom: 1.2rem;
-            background: linear-gradient(135deg, #ffffff 0%, #38bdf8 50%, #818cf8 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #38bdf8 40%, #818cf8 100%);
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent;
-            text-shadow: 0px 4px 25px rgba(56, 189, 248, 0.25);
+            text-shadow: 0px 10px 40px rgba(56, 189, 248, 0.3);
+            letter-spacing: -1px;
         }}
         .hero-subtitle {{
-            font-size:clamp(1.2rem,2.5vw,1.8rem); 
+            font-size:clamp(1.3rem, 2.5vw, 1.8rem); 
             font-weight:600; 
-            color:#f8fafc; 
-            margin-bottom:1.5rem;
+            color:#f1f5f9; 
+            margin-bottom:1.8rem;
             letter-spacing: 0.5px;
         }}
         .hero-text {{
             color:#94a3b8; 
-            font-size:clamp(1.05rem, 1.5vw, 1.25rem); 
+            font-size:clamp(1.1rem, 1.5vw, 1.25rem); 
             max-width:850px; 
             margin:0 auto; 
             line-height:1.8; 
             font-weight:400;
         }}
         .tag-pill {{
-            background: rgba(255,255,255,0.03);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 0.6rem 1.4rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.7rem 1.6rem;
             border-radius: 999px;
             font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            cursor: default;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }}
         .tag-pill:hover {{
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px -10px rgba(0,0,0,0.3);
+            background: rgba(30, 41, 59, 0.8);
+            transform: translateY(-4px) scale(1.05);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 15px 25px -10px rgba(0,0,0,0.4), 0 0 15px rgba(56, 189, 248, 0.3);
         }}
         </style>
         
-        <div class="hero-container">
-            <div style="font-size:5rem; margin-bottom:1.5rem; text-shadow: 0 10px 30px rgba(0,0,0,0.3);">🏗️</div>
+        <div class="hero-container animate-up">
+            <div style="font-size:5rem; margin-bottom:1.5rem; text-shadow: 0 10px 30px rgba(14,165,233,0.4); display:inline-block; animation: float 6s ease-in-out infinite;">🏗️</div>
             <h1 class="hero-title">EngiCost AI</h1>
             <h2 class="hero-subtitle">{t("مستقبل الهندسة الإنشائية والذكاء الاصطناعي", "The Future of Construction & AI")}</h2>
             <p class="hero-text">
@@ -208,10 +217,13 @@ def render_login_signup():
         ]
         
         card_hover = (
-            'background:rgba(30,41,59,0.4);border:1px solid rgba(255,255,255,0.05);'
-            'border-radius:24px;padding:1.8rem;text-align:right;margin-bottom:1rem;'
-            'transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);'
-            'box-shadow: 0 10px 30px -10px rgba(0,0,0,0.2);'
+            'background: linear-gradient(145deg, rgba(30,41,59,0.5), rgba(15,23,42,0.8));'
+            'border: 1px solid rgba(255,255,255,0.08);'
+            'border-top: 1px solid rgba(255,255,255,0.15);'
+            'border-radius: 28px; padding: 2rem; text-align: right; margin-bottom: 1.5rem;'
+            'transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);'
+            'box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);'
+            'backdrop-filter: blur(12px);'
         )
         # Using a 2x3 grid
         for idx in range(0, 6, 2):
@@ -219,19 +231,19 @@ def render_login_signup():
             with c1:
                 i, tlc, dsc = features[idx]
                 st.markdown(f"""
-                <div style="{card_hover}" onmouseover="this.style.background='rgba(30,41,59,0.8)'; this.style.transform='scale(1.02)';" onmouseout="this.style.background='rgba(30,41,59,0.4)'; this.style.transform='none';">
-                    <div style="font-size:3rem; margin-bottom:1rem; text-shadow: 0 0 20px rgba(14,165,233,0.5);">{i}</div>
-                    <h4 style="color:#e2e8f0; font-size:1.3rem; margin-bottom:0.5rem; font-weight:700;">{tlc}</h4>
-                    <p style="color:#94a3b8; font-size:0.95rem; line-height:1.6; margin:0;">{dsc}</p>
+                <div style="{card_hover}" onmouseover="this.style.transform='perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(1.03)'; this.style.borderColor='rgba(56,189,248,0.5)'; this.style.boxShadow='0 25px 50px -12px rgba(0,0,0,0.6), 0 0 30px rgba(14,165,233,0.15)';" onmouseout="this.style.transform='none'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.boxShadow='0 10px 30px -10px rgba(0,0,0,0.3)';">
+                    <div style="font-size:3.5rem; margin-bottom:1.5rem; text-shadow: 0 0 25px rgba(14,165,233,0.6); display:inline-block; animation: float 4s ease-in-out infinite;">{i}</div>
+                    <h4 style="color:#f8fafc; font-size:1.4rem; margin-bottom:0.8rem; font-weight:800;">{tlc}</h4>
+                    <p style="color:#94a3b8; font-size:1rem; line-height:1.7; margin:0;">{dsc}</p>
                 </div>
                 """, unsafe_allow_html=True)
             with c2:
                 i, tlc, dsc = features[idx+1]
                 st.markdown(f"""
-                <div style="{card_hover}" onmouseover="this.style.background='rgba(30,41,59,0.8)'; this.style.transform='scale(1.02)';" onmouseout="this.style.background='rgba(30,41,59,0.4)'; this.style.transform='none';">
-                    <div style="font-size:3rem; margin-bottom:1rem; text-shadow: 0 0 20px rgba(99,102,241,0.5);">{i}</div>
-                    <h4 style="color:#e2e8f0; font-size:1.3rem; margin-bottom:0.5rem; font-weight:700;">{tlc}</h4>
-                    <p style="color:#94a3b8; font-size:0.95rem; line-height:1.6; margin:0;">{dsc}</p>
+                <div style="{card_hover}" onmouseover="this.style.transform='perspective(1000px) rotateX(2deg) rotateY(2deg) scale(1.03)'; this.style.borderColor='rgba(99,102,241,0.5)'; this.style.boxShadow='0 25px 50px -12px rgba(0,0,0,0.6), 0 0 30px rgba(99,102,241,0.15)';" onmouseout="this.style.transform='none'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.boxShadow='0 10px 30px -10px rgba(0,0,0,0.3)';">
+                    <div style="font-size:3.5rem; margin-bottom:1.5rem; text-shadow: 0 0 25px rgba(99,102,241,0.6); display:inline-block; animation: float 4s ease-in-out infinite 0.5s;">{i}</div>
+                    <h4 style="color:#f8fafc; font-size:1.4rem; margin-bottom:0.8rem; font-weight:800;">{tlc}</h4>
+                    <p style="color:#94a3b8; font-size:1rem; line-height:1.7; margin:0;">{dsc}</p>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -265,33 +277,34 @@ def render_login_signup():
         p1, p2, p3 = st.columns([1, 1.1, 1])
         for pcol, (icon, pname, price, period, feats, bg, text_color, popular) in zip([p1, p2, p3], plans):
             with pcol:
-                glow = "0 0 40px rgba(56,189,248,0.3)" if popular else "none"
-                border = "2px solid rgba(56,189,248,0.8)" if popular else "1px solid rgba(255,255,255,0.08)"
+                glow = "0 0 50px rgba(56,189,248,0.4), inset 0 0 20px rgba(56,189,248,0.1)" if popular else "0 10px 30px -10px rgba(0,0,0,0.5)"
+                border = "2px solid rgba(56,189,248,0.8)" if popular else "1px solid rgba(255,255,255,0.1)"
+                border_top = "2px solid #38bdf8" if popular else "1px solid rgba(255,255,255,0.2)"
                 transform = "scale(1.05)" if popular else "scale(1)"
                 zindex = "10" if popular else "1"
                 
                 popular_badge = (
-                    f'<div style="background:linear-gradient(90deg, #38bdf8, #818cf8); color:#fff; font-size:0.8rem; font-weight:800;'
-                    f'padding:4px 15px; border-radius:999px; display:inline-block; margin-bottom:15px; box-shadow: 0 4px 15px rgba(56,189,248,0.4);">'
+                    f'<div style="background:linear-gradient(90deg, #38bdf8, #818cf8); color:#fff; font-size:0.85rem; font-weight:800;'
+                    f'padding:6px 20px; border-radius:999px; display:inline-block; margin-bottom:20px; box-shadow: 0 6px 20px rgba(56,189,248,0.5); text-transform: uppercase; letter-spacing: 1px;">'
                     f'⭐ {t("الخيار المفضل للمهندسين", "Most Popular Choice")}</div><br>'
                 ) if popular else "<br><br>"
                 
                 feat_html = "".join(
-                    f'<div style="margin:12px 0; font-size:0.95rem; color:#f8fafc; display:flex; gap:10px; align-items:center;">'
-                    f'<span style="color:{text_color}; font-size:1.2rem; font-weight:900;">✓</span> <span>{f}</span></div>'
+                    f'<div style="margin:16px 0; font-size:1rem; color:#f8fafc; display:flex; gap:12px; align-items:center;">'
+                    f'<span style="color:{text_color}; font-size:1.3rem; font-weight:900; filter: drop-shadow(0 0 5px {text_color}80);">✓</span> <span>{f}</span></div>'
                     for f in feats
                 )
                 
                 plan_html = (
-                    f'<div style="background:{bg}; border:{border}; border-radius:30px; padding:2.5rem; min-height:500px;'
+                    f'<div style="background:{bg}; border:{border}; border-top:{border_top}; border-radius:35px; padding:3rem 2.5rem; min-height:550px;'
                     f'box-shadow: {glow}; transform: {transform}; position: relative; z-index: {zindex}; '
-                    f'backdrop-filter: blur(10px); transition: all 0.3s ease;">'
+                    f'backdrop-filter: blur(20px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);">'
                     f'<div style="text-align:center;">'
                     f'{popular_badge}'
-                    f'<div style="font-size:3.5rem; margin-bottom:10px; text-shadow: 0 10px 20px rgba(0,0,0,0.5);">{icon}</div>'
+                    f'<div style="font-size:4rem; margin-bottom:15px; text-shadow: 0 15px 30px rgba(0,0,0,0.5); display:inline-block; animation: float 4s ease-in-out infinite;">{icon}</div>'
                     f'<h4 style="color:#f8fafc; font-size:1.8rem; margin:0 0 10px 0; font-weight:800;">{pname}</h4>'
-                    f'<div style="font-size:4rem; font-weight:900; color:{text_color}; line-height:1; text-shadow: 0 0 20px {text_color}80;">{price}'
-                    f'<span style="font-size:1.2rem; color:#94a3b8; font-weight:500; margin-inline-start:5px;">{period}</span></div>'
+                    f'<div style="font-size:4rem; font-weight:900; color:{text_color}; line-height:1; text-shadow: 0 0 30px {text_color}60;">{price}'
+                    f'<span style="font-size:1.2rem; color:#94a3b8; font-weight:600; margin-inline-start:5px;">{period}</span></div>'
                     f'</div>'
                     f'<div style="margin-top:2.5rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:2rem;">'
                     f'{feat_html}'

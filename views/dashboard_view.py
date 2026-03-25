@@ -96,13 +96,14 @@ def render_dashboard():
     for col, (icon, label, val, color, bg) in zip([col1, col2, col3, col4], kpis):
         with col:
             st.markdown(f"""
-            <div class="glass-card animate-up" style="text-align:center; padding: 1.5rem 1rem; position:relative; overflow:hidden;">
-                <div style="position:absolute; top:-10px; right:-10px; font-size:4rem; opacity:0.05;">{icon}</div>
-                <div style="background:{bg}; width:45px; height:45px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; border:1px solid {color}33;">
-                    <span style="font-size:1.4rem;">{icon}</span>
+            <div class="glass-card animate-up" style="text-align:center; padding: 1.8rem 1rem; position:relative; overflow:hidden; border-radius: 24px; transition: transform 0.4s ease, box-shadow 0.4s ease;" onmouseover="this.style.transform='translateY(-5px) scale(1.03)'; this.style.boxShadow='0 15px 35px -10px {color}60';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--shadow-lg)';">
+                <div style="position:absolute; top:-20px; right:-20px; font-size:6rem; opacity:0.04; filter: blur(2px); transform: rotate(15deg);">{icon}</div>
+                <div style="position:absolute; bottom:0; left:0; width:100%; height:4px; background: linear-gradient(90deg, transparent, {color}, transparent); opacity: 0.6;"></div>
+                <div style="background:{bg}; width:55px; height:55px; border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 15px auto; border:1px solid {color}40; box-shadow: 0 8px 20px {color}20, inset 0 2px 5px rgba(255,255,255,0.2);">
+                    <span style="font-size:1.8rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">{icon}</span>
                 </div>
-                <h2 style="margin:0; color:{color}; font-size:2.2rem; font-weight:800; font-family:'Outfit';">{val}</h2>
-                <p style="margin:4px 0 0 0; color:var(--text-secondary); font-size:0.85rem; font-weight:500;">{label}</p>
+                <h2 style="margin:0; color:#f8fafc; font-size:2.5rem; font-weight:900; font-family:'Outfit'; text-shadow: 0 0 15px {color}50;">{val}</h2>
+                <p style="margin:6px 0 0 0; color:#94a3b8; font-size:0.9rem; font-weight:600; text-transform: uppercase; letter-spacing: 0.5px;">{label}</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -323,10 +324,12 @@ def render_dashboard():
         for mcol, (mat, vals) in zip(mcols, items):
             with mcol:
                 st.markdown(f"""
-                <div class="glass-card animate-up" style="padding:1rem; border-left:4px solid var(--accent-primary);">
-                    <p style="margin:0; font-size:0.75rem; color:var(--text-secondary);">{mat}</p>
-                    <h3 style="margin:5px 0; color:white;">{vals['egp']:,.0f} <span style="font-size:0.8rem;">EGP</span></h3>
-                    <p style="margin:0; font-size:0.7rem; color:var(--success);">$ {vals['usd']:,.2f} USD</p>
+                <div class="glass-card animate-up" style="padding:1.5rem; border-left:4px solid var(--accent-primary); background: linear-gradient(135deg, rgba(30,41,59,0.5), rgba(15,23,42,0.8));">
+                    <p style="margin:0; font-size:0.8rem; color:#94a3b8; font-weight: 600; text-transform: uppercase;">{mat}</p>
+                    <h3 style="margin:8px 0; color:#f8fafc; font-size: 1.8rem; font-weight: 800;">{vals['egp']:,.0f} <span style="font-size:1rem; color:#64748b;">EGP</span></h3>
+                    <div style="display:inline-block; padding: 4px 10px; background: rgba(16,185,129,0.1); border-radius: 8px; border: 1px solid rgba(16,185,129,0.3);">
+                        <p style="margin:0; font-size:0.75rem; color:#34d399; font-weight: 600;">💰 $ {vals['usd']:,.2f} USD</p>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
 

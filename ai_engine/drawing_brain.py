@@ -1,6 +1,9 @@
 import json
 import re
 from typing import Dict, Any, List
+import os
+import urllib.parse
+from openai import OpenAI
 from ai_engine.cost_engine import get_cost_engine
 
 # ─── Project Type Intelligence ────────────────────────────────────────────────
@@ -283,3 +286,119 @@ GENERATE AT LEAST {max(bed_count + bath_count + 4, 8)} ROOMS. Make it architectu
         parsed["walls"] = []  # Force algorithmic fallback in the view
 
     return parsed, raw_response, fallback_used
+
+def analyze_plan_image(image_bytes: bytes, file_extension: str = "png") -> Dict[str, Any]:
+    """
+    Analyze an uploaded architectural floor plan image using Gemini Vision.
+    Returns structured rooms data in the standard JSON format.
+    """
+    import base64
+    engine = get_cost_engine()
+
+    # Encode image to base64
+    b64_image = base64.b64encode(image_bytes).decode("utf-8")
+    mime_type = f"image/{file_extension.lower().replace('jpg', 'jpeg')}"
+
+    vision_prompt = """You are an expert architectural engineer and CAD analyst.
+Analyze this floor plan image and extract ALL rooms visible in it.
+
+Return ONLY a valid JSON object (no markdown, no explanation) with this EXACT structure:
+{
+  "project_title": "Extracted Plan",
+  "project_type": "villa",
+  "style": "Modern",
+  "floors": 1,
+  "total_area_m2": <estimated_area>,
+  "rooms": [
+    {
+      "name": "Room name in Arabic (English)",
+      "type": "living|bedroom|bathroom|kitchen|corridor|garage|hall|office",
+      "x_m": <x_origin_in_meters>,
+      "y_m": <y_origin_in_meters>,
+      "width_m": <width_in_meters>,
+      "height_m": <depth_in_meters>,
+      "walls": {"north": "exterior|interior", "south": "exterior|interior", "east": "exterior|interior", "west": "exterior|interior"},
+      "doors": [{"wall": "south|north|east|west", "position": 0.5, "width_m": 1.0, "swing": 90}],
+      "windows": [{"wall": "north", "position": 0.5, "width_m": 1.2}],
+      "finish_floor": "Tile|Marble|Wood",
+      "ceiling_height_m": 3.0
+    }
+  ],
+  "special_elements": []
+}
+
+CRITICAL RULES:
+1. Estimate realistic dimensions in METERS from the drawing scale.
+2. Do NOT overlap rooms — maintain proper adjacency.
+3. Identify at least the main visible rooms.
+4. If scale is not clear, assume standard room sizes (bedroom: 4x4m, bathroom: 2x2.5m, living: 5x6m).
+"""
+
+    try:
+        import google.generativeai as genai
+        import os
+        api_key = os.environ.get("GEMINI_API_KEY", "")
+        if not api_key:
+            api_key = os.environ.get("GOOGLE_API_KEY", "")
+        
+        if api_key:
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            
+            response = model.generate_content([
+                vision_prompt,
+                {"mime_type": mime_type, "data": b64_image}
+            ])
+            raw = response.text
+            # Parse JSON from response
+            match = re.search(r'(\{.*\})', raw, re.DOTALL)
+            if match:
+                data = json.loads(match.group(1))
+                return smart_parse(data)
+    except Exception as e:
+        print(f"Vision analysis error: {e}")
+    
+    # Return empty structure on failure
+    return {"walls": [], "openings": [], "furniture": [], "labels": [], "rooms": [], 
+            "project_info": {"title": "Uploaded Plan", "error": "Could not parse image"}}
+
+
+def generate_3d_render(prompt: str, style: str, view_type: str, specialty: str) -> str:
+    """Generate professional 3D architectural renders using DALL-E 3 or fallback."""
+    api_key = os.environ.get("OPENAI_API_KEY", "")
+    
+    # Detailed architectural prompt engineering
+    base_prompt = f"Professional 8k hyper-realistic architectural concept design, {style} {specialty}. "
+    if view_type == "Isometric":
+        base_prompt += "3D Isometric cutaway floor plan perspective, showing interior layout explicitly from a high angle, highly detailed architectural model. "
+    elif view_type == "Perspective":
+        base_prompt += "Exterior perspective shot, photorealistic, cinematic lighting, Unreal Engine 5 aesthetic, V-Ray render. "
+    else:
+        base_prompt += "Interior design render, highly detailed, realistic materials and lighting, modern elegant aesthetic. "
+        
+    if prompt:
+        base_prompt += f"Specific details requested: {prompt}"
+
+    # Try DALL-E 3 if API key available
+    if api_key and api_key.startswith("sk-"):
+        try:
+            client = OpenAI(api_key=api_key)
+            response = client.images.generate(
+                model="dall-e-3",
+                prompt=base_prompt[:1000], # max length
+                size="1024x1024",
+                quality="hd",
+                n=1,
+            )
+            return response.data[0].url
+        except Exception as e:
+            print(f"DALL-E 3 API Error: {e}")
+            pass # Fallback to pollinations smoothly
+
+    # Fallback to Pollinations.ai
+    encoded_prompt = urllib.parse.quote(base_prompt)
+    import time
+    timestamp = int(time.time())
+    img_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1920&height=1080&nologo=true&seed={timestamp}"
+    return img_url
+
