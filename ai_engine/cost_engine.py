@@ -183,6 +183,23 @@ class CostEngine:
             return None, f"Groq error: {str(e)}"
         return None, f"Groq fails: {last_err}"
 
+    def transcribe_audio(self, audio_bytes, filename="audio.wav"):
+        """Use Groq whisper-large-v3 model to transcribe audio bytes to text."""
+        groq_key = _get_secret("GROQ_API_KEY")
+        if not groq_key or not groq_lib:
+            return None, "Groq API غير متاح للتعرف على الصوت."
+            
+        try:
+            client = groq_lib.Groq(api_key=groq_key.strip())
+            transcription = client.audio.transcriptions.create(
+              file=(filename, audio_bytes), # Tuple for file upload (filename, bytes)
+              model="whisper-large-v3",
+              response_format="json",
+            )
+            return transcription.text, None
+        except Exception as e:
+            return None, f"خطأ في التعرف على الصوت: {str(e)}"
+
     def _call_gemini_text(self, prompt_text, expect_json=True):
         """Call Gemini API. Returns parsed data if expect_json=True, else raw text."""
         if not genai:

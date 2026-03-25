@@ -128,7 +128,13 @@ def render_ipc_invoice():
         )
 
     # ─── Calculate ────────────────────────────────────────────────
-    if st.button(t("🧮 إصدار الشهادة", "🧮 Generate Certificate"), use_container_width=True):
+    cal1, cal2 = st.columns(2)
+    with cal1:
+        generate_btn = st.button(t("🧮 إصدار الشهادة", "🧮 Generate Certificate"), use_container_width=True)
+    with cal2:
+        sync_gantt_btn = st.button(t("🔄 ربط النسب بـ Gantt", "🔄 Sync % to Gantt"), use_container_width=True)
+
+    if generate_btn:
         rows_out = []
         total_contract = 0; total_prev = 0; total_curr = 0; total_this_period = 0
         for _, row in edited.iterrows():
@@ -178,6 +184,24 @@ def render_ipc_invoice():
             "currency":      currency,
         }
         st.rerun()
+
+    if sync_gantt_btn:
+        from views.gantt_view import GANTT_KEY, _default_tasks
+        if GANTT_KEY not in st.session_state:
+            st.session_state[GANTT_KEY] = _default_tasks()
+        
+        g_tasks = st.session_state[GANTT_KEY]
+        synced_count = 0
+        ipc_map = {str(row["البند"]).strip().lower(): float(row["% حالي"]) for _, row in edited.iterrows()}
+        
+        for i, tsk in enumerate(g_tasks):
+            t_name = str(tsk.get("task", "")).strip().lower()
+            if t_name in ipc_map:
+                g_tasks[i]["pct"] = int(ipc_map[t_name])
+                synced_count += 1
+        
+        st.session_state[GANTT_KEY] = g_tasks
+        st.success(t(f"✅ تم ربط وتحديث الإنجاز المالي بـ {synced_count} بند في الجدول الزمني (Gantt)!", f"✅ Synced financial progress for {synced_count} tasks in Gantt!"))
 
     # ─── Results ──────────────────────────────────────────────────
     if st.session_state.get("ipc_result"):

@@ -28,4 +28,7 @@ ezdxf
 reportlab
 svglib
 pydantic
+fastapi
+uvicorn
+huggingface_hub
 # Updated 2026-03-24 - Removed pygments/rich/markdown-it-py (streamlit transitive deps - caused conflict)

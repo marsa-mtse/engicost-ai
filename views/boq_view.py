@@ -6,7 +6,8 @@ from ai_engine.cost_engine import get_cost_engine
 from ai_engine.market_api import MarketEngine
 from ai_engine.export_engine import ExportEngine
 from limits import check_limit_reached, increment_usage
-from database import SessionLocal, User, Project
+from database import SessionLocal, User
+from services.cost_service import CostService
 import datetime
 
 def render_boq_pricing():
@@ -98,18 +99,11 @@ def render_boq_pricing():
                         else:
                             res = engine.extract_boq_items(content_source)
                         
-                        # Add suggested rates from MarketEngine/AI
+                        # Add suggested rates from MarketEngine/AI via CostService
                         market_data = st.session_state.get("market_data", MarketEngine.get_live_prices())
-                        market_rates = engine.suggest_market_prices(res)
                         rate = market_data.get('rate', 48.0)
                         
-                        for i, item in enumerate(res):
-                            if str(i) in market_rates:
-                                p_usd = float(market_rates[str(i)])
-                                # If currency is USD, just use the USD rate. Otherwise, use local rate.
-                                item['rate'] = p_usd if currency == "USD" else p_usd * rate
-                            else:
-                                item['rate'] = 0.0
+                        res = CostService.match_boq_items(engine, res, market_data.get('prices', {}), currency, rate)
 
                         st.session_state.engicost_boq_res = res
                         if res and isinstance(res, list) and "error" in res[0]:
@@ -165,25 +159,10 @@ def render_boq_pricing():
                                 st.error(t("خطأ: لم يتم التعرف على عمود الوصف. أعمدة المتاحة: " + ", ".join(cols), "Error: Could not identify description column. Available: " + ", ".join(cols)))
 
 
-                            # Smart matching prompt
-                            match_prompt = f"""
-                            Match these BOQ items to the current market prices.
-                            Market Prices (EGP): {json.dumps({k: v['egp'] for k, v in prices.items()})}
-                            Items to match: {df[[desc_col, unit_col] if unit_col else [desc_col]].to_json()}
-                            
-                            Return a JSON dictionary where key is the index and value is the best matched EGP price per unit.
-                            If no match, estimate based on item complexity.
-                            """
-                            match_res, _ = engine._call_gemini_text(match_prompt, expect_json=True)
-                            
-                            if match_res:
-                                for i, item in enumerate(res):
-                                    idx_str = str(i)
-                                    if idx_str in match_res:
-                                        p_egp = float(match_res[idx_str])
-                                        item['rate'] = p_egp if currency == "EGP" else p_egp / rate
-                                st.session_state.engicost_boq_res = res
-                                st.rerun()
+                            # Smart matching via CostService
+                            res = CostService.match_boq_items(engine, res, prices, currency, rate)
+                            st.session_state.engicost_boq_res = res
+                            st.rerun()
                         except Exception as e:
                             st.error(f"Auto-match error: {e}")
 
@@ -209,15 +188,13 @@ def render_boq_pricing():
                         db = SessionLocal()
                         user = db.query(User).filter(User.username == st.session_state.username).first()
                         if user:
-                            new_proj = Project(
-                                owner_id=user.id,
-                                name=proj_name_input,
-                                project_type="BOQ",
-                                result_data=json.dumps(edited_df.to_dict(orient="records")),
-                                created_at=datetime.datetime.utcnow(),
+                            CostService.save_project(
+                                db, 
+                                user.id, 
+                                proj_name_input, 
+                                "BOQ", 
+                                edited_df.to_dict(orient="records")
                             )
-                            db.add(new_proj)
-                            db.commit()
                             st.success(t(f"✅ تم حفظ '{proj_name_input}' بنجاح!", f"✅ '{proj_name_input}' saved successfully!"))
                             # Clear cache for user projects since a new one was added
                             st.cache_data.clear()

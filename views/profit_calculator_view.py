@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from utils import t, render_section_header
 from ai_engine.export_engine import ExportEngine
+from services.cost_service import CostService
 import datetime
 
 def render_profit_calculator():
@@ -67,23 +68,19 @@ def render_profit_calculator():
     # ─── Calculate & Display ─────────────────────────────────────
     if st.button(t("🧮 احسب سعر العطاء", "🧮 Calculate Tender Price"), use_container_width=True):
         direct_cost = edited["التكلفة"].sum()
-        overhead_val    = direct_cost * overhead_pct / 100
-        contingency_val = direct_cost * contingency_pct / 100
-        subtotal        = direct_cost + overhead_val + contingency_val
-        profit_val      = subtotal * profit_pct / 100
-        pre_vat         = subtotal + profit_val
-        vat_val         = pre_vat * vat_pct / 100
-        grand_total     = pre_vat + vat_val
-
+        res = CostService.calculate_tender_price(
+            direct_cost, overhead_pct, contingency_pct, profit_pct, vat_pct
+        )
+        
         st.session_state.calc_result = {
-            "direct": direct_cost,
-            "overhead": overhead_val,
-            "contingency": contingency_val,
-            "subtotal": subtotal,
-            "profit": profit_val,
-            "pre_vat": pre_vat,
-            "vat": vat_val,
-            "grand": grand_total,
+            "direct": res["direct_cost"],
+            "overhead": res["overhead_val"],
+            "contingency": res["contingency_val"],
+            "subtotal": res["subtotal"],
+            "profit": res["profit_val"],
+            "pre_vat": res["pre_vat"],
+            "vat": res["vat_val"],
+            "grand": res["grand_total"],
             "sym": sym,
             "project": project_name,
             "client": client_name,

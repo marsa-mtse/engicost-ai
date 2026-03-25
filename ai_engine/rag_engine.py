@@ -158,6 +158,61 @@ def _search_boq_templates(query_tokens: List[str], top_k: int = 2) -> List[Dict]
     return results[:top_k]
 
 
+def _search_user_docs(query_tokens: List[str], top_k: int = 5) -> List[Dict]:
+    """Search documents uploaded by the user in this session."""
+    import streamlit as st
+    results = []
+    
+    # User docs are expected to be in st.session_state as a list of dicts
+    user_docs = st.session_state.get("user_docs", [])
+    if not user_docs:
+        return []
+
+    for doc in user_docs:
+        content = doc.get("content", "")
+        score = _score_overlap(query_tokens, content)
+        if score > 0:
+            results.append({
+                "type": "user_doc",
+                "score": score,
+                "data": doc
+            })
+
+    results.sort(key=lambda x: x["score"], reverse=True)
+    return results[:top_k]
+
+
+def process_uploaded_file(uploaded_file) -> Optional[Dict]:
+    """Extract text from PDF, TXT, or MD files for RAG indexing."""
+    import io
+    content = ""
+    fname = uploaded_file.name
+    
+    try:
+        if fname.endswith(".pdf"):
+            import PyPDF2
+            reader = PyPDF2.PdfReader(io.BytesIO(uploaded_file.getvalue()))
+            for page in reader.pages:
+                content += (page.extract_text() or "") + "\n"
+        elif fname.endswith((".txt", ".md")):
+            content = str(uploaded_file.getvalue(), "utf-8")
+        else:
+            return None
+            
+        if not content.strip():
+            return None
+            
+        return {
+            "title": fname,
+            "content": content,
+            "source": f"Uploaded: {fname}",
+            "tokens": _tokenize(content)
+        }
+    except Exception as e:
+        print(f"Error processing {fname}: {e}")
+        return None
+
+
 # ── Context Builder ────────────────────────────────────────────────────────────
 
 def retrieve_context(query: str, lang: str = "ar") -> Tuple[str, List[Dict]]:
@@ -176,15 +231,19 @@ def retrieve_context(query: str, lang: str = "ar") -> Tuple[str, List[Dict]]:
     prices = _search_prices(query_tokens, top_k=4)
     codes = _search_ecp_codes(query_tokens, top_k=3)
     templates = _search_boq_templates(query_tokens, top_k=2)
+    
+    # --- New: Search User Documents (Uploaded in session) ---
+    user_docs = _search_user_docs(query_tokens, top_k=5)
 
     all_results.extend(faqs)
     all_results.extend(prices)
     all_results.extend(codes)
     all_results.extend(templates)
+    all_results.extend(user_docs)
 
     # Sort globally by score, take top results
     all_results.sort(key=lambda x: x["score"], reverse=True)
-    top_results = [r for r in all_results if r["score"] > 0.05][:8]
+    top_results = [r for r in all_results if r["score"] > 0.05][:10]
 
     if not top_results:
         return "", []
@@ -263,6 +322,20 @@ def retrieve_context(query: str, lang: str = "ar") -> Tuple[str, List[Dict]]:
                 "title": tmpl.get("name_ar", ""),
                 "type": "قالب مقايسة",
                 "source": "boq_templates.json",
+                "score": result["score"]
+            })
+
+        elif rtype == "user_doc":
+            doc = data
+            context_lines.append(
+                f"📄 مستند مستخدم ({doc.get('title', 'تحليل')}):\n"
+                f"  {doc.get('content', '')[:1000]}\n" # limit context size
+            )
+            sources_for_display.append({
+                "icon": "📄",
+                "title": doc.get('title', 'مستند خارجي'),
+                "type": "مستند مستخدم",
+                "source": doc.get('source', 'رفع يدوي'),
                 "score": result["score"]
             })
 

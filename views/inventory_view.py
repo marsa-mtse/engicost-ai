@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
-from database import SessionLocal, InventoryItem, MaterialTransaction, Project
+from database import SessionLocal, Project
 from utils import t, render_section_header
+from services.inventory_service import InventoryService
 import datetime
 
 def render_inventory_management():
@@ -26,19 +27,20 @@ def render_inventory_management():
         ])
         
         with tab1:
-            items = db.query(InventoryItem).filter(InventoryItem.project_id == selected_project_id).all()
-            if items:
-                data = []
-                for item in items:
-                    data.append({
-                        "ID": item.id,
-                        "Item": item.name,
-                        "Quantity": item.quantity,
-                        "Unit": item.unit,
-                        "Avg Price": f"{item.avg_price:,.2f}",
-                        "Total Value": f"{(item.quantity * item.avg_price):,.2f}",
-                        "Last Updated": item.last_updated.strftime("%Y-%m-%d")
-                    })
+            stock = InventoryService.get_stock_status(db, selected_project_id)
+            if stock:
+                data = [
+                    {
+                        "ID": item["id"],
+                        "Item": item["name"],
+                        "Quantity": item["quantity"],
+                        "Unit": item["unit"],
+                        "Avg Price": f"{item['avg_price']:,.2f}",
+                        "Total Value": f"{item['total_value']:,.2f}",
+                        "Last Updated": item["last_updated"].strftime("%Y-%m-%d")
+                    }
+                    for item in stock
+                ]
                 df = pd.DataFrame(data)
                 st.dataframe(df, use_container_width=True, hide_index=True)
             else:
@@ -59,39 +61,9 @@ def render_inventory_management():
                 submit = st.form_submit_button(t("تسجيل التوريد", "Log Purchase"))
                 
                 if submit and item_name:
-                    # Check if item exists
-                    item = db.query(InventoryItem).filter(
-                        InventoryItem.project_id == selected_project_id,
-                        InventoryItem.name == item_name
-                    ).first()
-                    
-                    if not item:
-                        item = InventoryItem(
-                            project_id=selected_project_id,
-                            name=item_name,
-                            unit=unit,
-                            quantity=0,
-                            avg_price=0
-                        )
-                        db.add(item)
-                        db.flush()
-                    
-                    # Update average price and quantity
-                    total_cost = (item.quantity * item.avg_price) + (qty * price)
-                    item.quantity += qty
-                    item.avg_price = total_cost / item.quantity
-                    item.last_updated = datetime.datetime.utcnow()
-                    
-                    # Log transaction
-                    trans = MaterialTransaction(
-                        item_id=item.id,
-                        type="IN",
-                        quantity=qty,
-                        unit_price=price,
-                        note=note
+                    InventoryService.log_purchase(
+                        db, selected_project_id, item_name, unit, qty, price, note
                     )
-                    db.add(trans)
-                    db.commit()
                     st.success(t("تم تسجيل التوريد وتحديث المخزن!", "Purchase logged and stock updated!"))
                     st.rerun()
 
@@ -109,22 +81,10 @@ def render_inventory_management():
                     issue_submit = st.form_submit_button(t("تأكيد الصرف", "Confirm Issue"))
                     
                     if issue_submit:
-                        item = db.query(InventoryItem).get(selected_item_id)
-                        if item.quantity < issue_qty:
-                            st.error(t("الكمية المطلوبة أكبر من المتوفر بالمخزن!", "Requested quantity exceeds available stock!"))
+                        item, error = InventoryService.issue_material(db, selected_item_id, issue_qty, issue_note)
+                        if error:
+                            st.error(t(f"خطأ: {error}", f"Error: {error}"))
                         else:
-                            item.quantity -= issue_qty
-                            item.last_updated = datetime.datetime.utcnow()
-                            
-                            trans = MaterialTransaction(
-                                item_id=item.id,
-                                type="OUT",
-                                quantity=issue_qty,
-                                unit_price=item.avg_price, # Issued at avg cost
-                                note=issue_note
-                            )
-                            db.add(trans)
-                            db.commit()
                             st.success(t("تم تسجيل الصرف بنجاح.", "Material issued successfully."))
                             st.rerun()
 

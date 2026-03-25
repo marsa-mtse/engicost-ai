@@ -37,7 +37,10 @@ def main():
     from utils import inject_react_translation_fix
     inject_react_translation_fix()
     
-    if not st.session_state.authenticated:
+    if "share" in st.query_params:
+        from views import shared_project_view
+        shared_project_view.render_shared_project(st.query_params["share"])
+    elif not st.session_state.authenticated:
         from views import auth_view
         auth_view.render_login_signup()
     else:
@@ -176,7 +179,20 @@ def render_app():
             st.session_state.global_search = ""
             st.session_state.clear_search_flag = False
 
-        # Global Search Bar
+        # --- Language Toggle V4 ---
+        col_l, col_r = st.columns(2)
+        with col_l:
+            if st.button("🇪🇬 العربية", use_container_width=True, type="primary" if st.session_state.lang == "ar" else "secondary"):
+                st.session_state.lang = "ar"
+                st.rerun()
+        with col_r:
+            if st.button("🇺🇸 English", use_container_width=True, type="primary" if st.session_state.lang == "en" else "secondary"):
+                st.session_state.lang = "en"
+                st.rerun()
+        
+        st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+
+        # --- Search Hub ---
         search_query = st.text_input("🔍 " + t("البحث السريع...", "Global Search..."), key="global_search", placeholder=t("ابحث عن أداة...", "Search for a tool..."))
         
         # API Key Warnings

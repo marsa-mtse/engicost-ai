@@ -101,6 +101,24 @@ def render_ai_brain():
             t("اكتب سؤالك الهندسي هنا...", "Type your engineering question here..."),
             key="brain_input"
         )
+        
+        # --- Voice Input Integration ---
+        if hasattr(st, "experimental_audio_input"):
+            audio_val = st.experimental_audio_input(t("🎤 اسأل بصوتك (العقل الهندسي)", "🎤 Ask with your voice"))
+        elif hasattr(st, "audio_input"):
+            audio_val = st.audio_input(t("🎤 اسأل بصوتك (العقل الهندسي)", "🎤 Ask with your voice"))
+        else:
+            audio_val = None
+            
+        if audio_val:
+            with st.spinner(t("جاري معالجة الصوت...", "Processing voice...")):
+                from ai_engine.cost_engine import get_cost_engine
+                text, err = get_cost_engine().transcribe_audio(audio_val.getvalue())
+                if text:
+                    query = text
+                else:
+                    st.error(err)
+        
         if prefill:
             query = prefill
 
@@ -238,6 +256,38 @@ def render_ai_brain():
     # ════════════════════════════════════════════════════════════════════════
     with tab_kb:
         st.markdown(f"##### 📚 {t('استعراض قاعدة المعرفة الهندسية', 'Browse Engineering Knowledge Base')}")
+
+        # --- New: Private Knowledge Base (User Uploads) ---
+        with st.expander(t("💎 إضافة مستنداتك الخاصة (عقود، أكواد، تقارير)", "💎 Add Your Private Documents (Contracts, Codes, Reports)"), expanded=False):
+            st.info(t("يمكنك رفع ملفات PDF أو Text ليقوم العقل الهندسي بتحليلها والرد على أسئلتك بناءً عليها.", "Upload PDF/Text files so the AI Brain can analyze them and answer your questions accordingly."))
+            
+            uploaded_files = st.file_uploader(t("اختر مستنداتك", "Choose your documents"), accept_multiple_files=True, type=["pdf", "txt", "md"])
+            
+            if uploaded_files:
+                if "user_docs" not in st.session_state:
+                    st.session_state.user_docs = []
+                
+                from ai_engine.rag_engine import process_uploaded_file
+                
+                for f in uploaded_files:
+                    # Check if already processed
+                    if not any(d["title"] == f.name for d in st.session_state.user_docs):
+                        with st.spinner(f"{t('جاري فهرسة', 'Indexing')} {f.name}..."):
+                            doc_data = process_uploaded_file(f)
+                            if doc_data:
+                                st.session_state.user_docs.append(doc_data)
+                                st.success(f"✅ {f.name} {t('جاهز للاستخدام', 'Ready for use')}")
+            
+            if st.session_state.get("user_docs"):
+                st.markdown(f"**{t('المستندات المحملة حالياً:', 'Currently Loaded Documents:')}**")
+                for i, doc in enumerate(st.session_state.user_docs):
+                    c1, c2 = st.columns([4, 1])
+                    c1.write(f"📄 {doc['title']}")
+                    if c2.button("🗑️", key=f"del_doc_{i}"):
+                        st.session_state.user_docs.pop(i)
+                        st.rerun()
+
+        st.markdown("---")
 
         import json, os
         kb_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "knowledge")

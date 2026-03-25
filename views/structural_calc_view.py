@@ -4,114 +4,7 @@ import pandas as pd
 from utils import t, render_section_header
 from ai_engine.export_engine import ExportEngine
 
-# ────────────────────────────────────────────────────────────────────────────────
-# ECP 203-2018 & ACI 318-19 core calculations
-# ────────────────────────────────────────────────────────────────────────────────
-
-def calc_column(b_mm, t_mm, height_m, fcu_mpa, fy_mpa, load_kn, rho_pct):
-    """Short column design check — ECP 203."""
-    b = b_mm / 1000; d = t_mm / 1000; h = height_m
-    Ag = b * d  # m²
-    rho = rho_pct / 100
-    As = rho * Ag  # m²
-    Pu_kn = 0.35 * fcu_mpa * 1000 * (Ag - As) + 0.67 * fy_mpa * 1000 * As
-    status = "✅ آمن" if Pu_kn >= load_kn else "❌ يحتاج مراجعة"
-    concrete_vol = Ag * h  # m³
-    steel_kg = As * h * 7850  # density 7850 kg/m³
-    return {
-        "المساحة Ag (m²)": round(Ag, 4),
-        "مساحة الحديد As (m²)": round(As, 6),
-        "الحمل الأقصى Pu (kN)": round(Pu_kn, 1),
-        "حمل التصميم Pd (kN)": load_kn,
-        "الحالة": status,
-        "خرسانة (m³)": round(concrete_vol, 3),
-        "حديد (kg)": round(steel_kg, 1),
-    }
-
-
-def calc_beam(b_mm, h_mm, span_m, fcu_mpa, fy_mpa, moment_knm):
-    """Rectangular beam design — ECP 203 / ACI 318."""
-    b = b_mm / 1000; h = h_mm / 1000
-    d = h - 0.05  # effective depth (50 mm cover)
-    phi_b = 0.9
-    # Required tension steel
-    Rn = moment_knm * 1000 / (phi_b * b * d**2)  # kN/m → N/m via *1000
-    m = fy_mpa / (0.85 * fcu_mpa)
-    rho_req = (1/m) * (1 - math.sqrt(max(0, 1 - 2*m*Rn/(fy_mpa*1000))))
-    rho_min = max(1.4/fy_mpa, 0.25*math.sqrt(fcu_mpa)/fy_mpa)
-    rho_max = 0.75 * 0.85 * 0.85 * fcu_mpa/fy_mpa * (600/(600+fy_mpa))
-    rho_use = max(rho_req, rho_min)
-    status = "✅ آمن" if rho_use <= rho_max else "⚠️ رفع القطاع"
-    As_cm2 = rho_use * b * d * 10000  # cm²
-    # Quantities
-    concrete_vol = b * h * span_m
-    steel_wt = rho_use * (b * d) * span_m * 7850
-    return {
-        "عمق فعّال d (m)": round(d, 3),
-        "نسبة الحديد ρ": f"{rho_use:.4f} ({rho_use*100:.2f}%)",
-        "مساحة الحديد As (cm²)": round(As_cm2, 2),
-        "ρ_max": round(rho_max, 4),
-        "الحالة": status,
-        "خرسانة (m³)": round(concrete_vol, 3),
-        "حديد (kg)": round(steel_wt, 1),
-    }
-
-
-def calc_slab(span_m, thickness_mm, fcu_mpa, fy_mpa, load_kpa, slab_type="one-way"):
-    """One-way or two-way slab check."""
-    t_s = thickness_mm / 1000
-    # Minimum thickness check (ECP): L/20 for one-way
-    t_min = span_m / (28 if slab_type == "one-way" else 40)
-    status_thick = "✅" if t_s >= t_min else f"⚠️ سماكة أدنى: {t_min*1000:.0f} mm"
-    # Strip moment (per meter)
-    wu = 1.4 * t_s * 25 + 1.6 * load_kpa  # factored load kN/m²
-    Mu = wu * span_m**2 / 8  # kN·m/m
-    d = t_s - 0.025  # effective depth
-    Rn = Mu * 1000 / (0.9 * 1.0 * d**2)
-    m = fy_mpa / (0.85 * fcu_mpa)
-    rho = (1/m) * (1 - math.sqrt(max(0, 1 - 2*m*Rn/(fy_mpa*1000))))
-    rho = max(rho, 0.002)  # min steel ECP
-    As = rho * 1.0 * d * 10000  # cm²/m
-    return {
-        "السماكة المدخلة (mm)": thickness_mm,
-        "السماكة الدنيا ECP (mm)": round(t_min * 1000, 0),
-        "فحص السماكة": status_thick,
-        "حمل المصنّع wu (kN/m²)": round(wu, 2),
-        "العزم Mu (kN·m/m)": round(Mu, 2),
-        "حديد As (cm²/m)": round(As, 2),
-        "خرسانة / م²": f"{t_s} m³",
-    }
-
-
-def calc_footing(load_kn, qa_kpa, fcu_mpa, fy_mpa, col_b_mm, col_d_mm):
-    """Square isolated footing sizing."""
-    qa = qa_kpa; Pu = load_kn
-    # Net upward pressure (assume footing + soil = 20% of column load)
-    q_net = qa
-    A_req = (Pu * 1.1) / q_net  # m²
-    L = math.ceil(math.sqrt(A_req) * 10) / 10  # round up to nearest 100mm
-    # Thickness (punching check — simplified)
-    t = max(0.3, (L - col_b_mm/1000) / 4)
-    t = math.ceil(t * 10) / 10
-    c_b = col_b_mm / 1000; c_d = col_d_mm / 1000
-    # Flexural design
-    M = (Pu * 1.4) / (L) * ((L - c_b) / 2)**2 / 2  # kN·m per unit width
-    d = t - 0.075
-    Rn = M * 1000 / (0.9 * L * d**2)
-    m_r = fy_mpa / (0.85 * fcu_mpa)
-    rho = (1 / m_r) * (1 - math.sqrt(max(0, 1 - 2*m_r*Rn/(fy_mpa*1000))))
-    As = max(rho, 0.002) * L * d * 10000
-    conc_vol = L * L * t
-    steel_kg = max(rho, 0.002) * (L * d) * L * 7850
-    return {
-        "مساحة القاعدة المطلوبة (m²)": round(A_req, 2),
-        "أبعاد القاعدة (m × m)": f"{L} × {L}",
-        "السماكة t (m)": t,
-        "حديد As (cm²)": round(As, 2),
-        "خرسانة (m³)": round(conc_vol, 3),
-        "حديد (kg)": round(steel_kg, 1),
-    }
-
+from services.structural_service import StructuralService
 
 # ────────────────────────────────────────────────────────────────────────────────
 # Main Render
@@ -170,8 +63,17 @@ def render_structural_calc():
             rho_col = st.number_input(t("نسبة الحديد ρ%", "Steel Ratio ρ%"), value=1.5, min_value=0.8, max_value=6.0, step=0.1)
 
         if st.button(t("🧮 حساب العمود", "🧮 Calculate Column"), use_container_width=True, key="btn_col"):
-            result = calc_column(b_col, h_col, ht_col, fcu, fy, load_col, rho_col)
-            st.session_state.col_result = result
+            res = StructuralService.calc_column(b_col, h_col, ht_col, fcu, fy, load_col, rho_col)
+            # Map to UI format
+            st.session_state.col_result = {
+                t("المساحة Ag (m²)", "Ag (m²)"): res["Ag_m2"],
+                t("مساحة الحديد As (m²)", "As (m²)"): res["As_m2"],
+                t("الحمل الأقصى Pu (kN)", "Max Load Pu (kN)"): res["Pu_kn"],
+                t("حمل التصميم Pd (kN)", "Design Load Pd (kN)"): res["Pd_kn"],
+                t("الحالة", "Status"): res["status"],
+                "خرسانة (m³)": res["concrete_m3"],
+                "حديد (kg)": res["steel_kg"],
+            }
 
         if st.session_state.get("col_result"):
             r = st.session_state.col_result
@@ -199,8 +101,17 @@ def render_structural_calc():
             mu_bm = st.number_input(t("عزم التصميم Mu (kN·m)", "Design Moment Mu (kN·m)"), value=120.0, step=10.0)
 
         if st.button(t("🧮 حساب الكمرة", "🧮 Calculate Beam"), use_container_width=True, key="btn_beam"):
-            result = calc_beam(b_bm, h_bm, span_bm, fcu, fy, mu_bm)
-            st.session_state.beam_result = result
+            res = StructuralService.calc_beam(b_bm, h_bm, span_bm, fcu, fy, mu_bm)
+            # Map to UI format
+            st.session_state.beam_result = {
+                t("عمق فعّال d (m)", "Eff. Depth d (m)"): res["d_m"],
+                t("نسبة الحديد ρ", "Steel Ratio ρ"): f"{res['rho']:.4f} ({res['rho']*100:.2f}%)",
+                t("مساحة الحديد As (cm²)", "Steel Area As (cm²)"): res["As_cm2"],
+                "ρ_max": res["rho_max"],
+                t("الحالة", "Status"): res["status"],
+                "خرسانة (m³)": res["concrete_m3"],
+                "حديد (kg)": res["steel_kg"],
+            }
 
         if st.session_state.get("beam_result"):
             r = st.session_state.beam_result
@@ -228,8 +139,17 @@ def render_structural_calc():
 
         sl_key = "one-way" if "واحد" in slab_type or "one" in slab_type else "two-way"
         if st.button(t("🧮 حساب البلاطة", "🧮 Calculate Slab"), use_container_width=True, key="btn_slab"):
-            result = calc_slab(span_sl, thick_sl, fcu, fy, live_sl, sl_key)
-            st.session_state.slab_result = result
+            res = StructuralService.calc_slab(span_sl, thick_sl, fcu, fy, live_sl, sl_key)
+            # Map to UI format
+            st.session_state.slab_result = {
+                t("السماكة المدخلة (mm)", "Input Thickness (mm)"): res["thickness_mm"],
+                t("السماكة الدنيا ECP (mm)", "Min Thickness ECP (mm)"): res["t_min_mm"],
+                t("فحص السماكة", "Thickness Check"): res["status_thick"],
+                t("حمل المصنّع wu (kN/m²)", "Factored Load wu (kN/m²)"): res["wu_kpa"],
+                t("العزم Mu (kN·m/m)", "Moment Mu (kN·m/m)"): res["Mu_knm"],
+                t("حديد As (cm²/m)", "Steel As (cm²/m)"): res["As_cm2"],
+                t("خرسانة / م²", "Concrete / m²"): f"{res['concrete_m3_per_m2']} m³",
+            }
 
         if st.session_state.get("slab_result"):
             r = st.session_state.slab_result
@@ -254,8 +174,16 @@ def render_structural_calc():
             col_d_ft = st.number_input(t("عمق العمود d (mm)", "Column Depth d (mm)"), value=300, step=50)
 
         if st.button(t("🧮 حساب القاعدة", "🧮 Calculate Footing"), use_container_width=True, key="btn_foot"):
-            result = calc_footing(load_ft, qa_ft, fcu, fy, col_b_ft, col_d_ft)
-            st.session_state.foot_result = result
+            res = StructuralService.calc_footing(load_ft, qa_ft, fcu, fy, col_b_ft, col_d_ft)
+            # Map to UI format
+            st.session_state.foot_result = {
+                t("مساحة القاعدة المطلوبة (m²)", "Req. Footing Area (m²)"): res["A_req_m2"],
+                t("أبعاد القاعدة (m × m)", "Footing Dim (m × m)"): f"{res['L_m']} × {res['L_m']}",
+                t("السماكة t (m)", "Thickness t (m)"): res["t_m"],
+                t("حديد As (cm²)", "Steel As (cm²)"): res["As_cm2"],
+                "خرسانة (m³)": res["concrete_m3"],
+                "حديد (kg)": res["steel_kg"],
+            }
 
         if st.session_state.get("foot_result"):
             r = st.session_state.foot_result

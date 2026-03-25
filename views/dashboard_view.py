@@ -272,13 +272,31 @@ def render_dashboard():
                                 df_show = pd.DataFrame(data)
                                 st.dataframe(df_show, use_container_width=True)
                                 from ai_engine.export_engine import ExportEngine
-                                col_a, col_b = st.columns(2)
+                                col_a, col_b, col_c = st.columns(3)
                                 with col_a:
                                     excel_data = ExportEngine.generate_professional_excel(df_show)
-                                    st.download_button(t("📊 Excel", "Excel"), data=excel_data, file_name=f"{p.name}.xlsx", key=f"ex_{p.id}")
+                                    st.download_button(t("📊 Excel", "Excel"), data=excel_data, file_name=f"{p.name}.xlsx", key=f"ex_{p.id}", use_container_width=True)
                                 with col_b:
                                     pdf_data = ExportEngine.generate_professional_pdf(df_show, project_name=p.name)
-                                    st.download_button(t("📄 PDF", "PDF"), data=pdf_data, file_name=f"{p.name}.pdf", key=f"pd_{p.id}")
+                                    st.download_button(t("📄 PDF", "PDF"), data=pdf_data, file_name=f"{p.name}.pdf", key=f"pd_{p.id}", use_container_width=True)
+                                with col_c:
+                                    if st.button(t("🔗 إنشاء رابط مشاركة", "🔗 Share Link"), key=f"sh_{p.id}", use_container_width=True):
+                                        from database import SessionLocal, Project
+                                        import uuid
+                                        db = SessionLocal()
+                                        try:
+                                            db_p = db.query(Project).get(p.id)
+                                            if not db_p.share_token:
+                                                db_p.share_token = str(uuid.uuid4())
+                                                db_p.is_public = True
+                                                db.commit()
+                                            st.session_state[f"share_link_{p.id}"] = db_p.share_token
+                                        finally:
+                                            db.close()
+                                        
+                                tk = st.session_state.get(f"share_link_{p.id}")
+                                if tk:
+                                    st.info(t(f"**رابط العميل (انسخ):**\\n`https://engicost-ai.streamlit.app/?share={tk}`", f"**Client Link:**\\n`https://engicost-ai.streamlit.app/?share={tk}`"))
                         except Exception:
                             st.info(t("لا توجد بيانات للعرض", "No data to display"))
         except Exception as e:
