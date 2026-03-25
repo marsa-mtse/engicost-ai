@@ -677,7 +677,13 @@ def _render_drawing_engine_internal():
 - عدد الحمامات: {bath_count}
 - إضافات: {"مسبح، " if pool_opt else ""}{"لاندسكيب وحديقة، " if landscaping else ""}
 """
-                        try:\n                            from ai_engine.drawing_brain import extract_quantities_from_plan\n                            if "floors" not in r_data: r_data["floors"] = floor_count\n                            transfer_text = extract_quantities_from_plan(r_data, specialty)\n                        except Exception as e:\n                            transfer_text = f"Extraction Error: {e}"\n                        st.session_state.boq_transfer_data = transfer_text
+                        try:
+                            from ai_engine.drawing_brain import extract_quantities_from_plan
+                            if "floors" not in r_data: r_data["floors"] = floor_count
+                            transfer_text = extract_quantities_from_plan(r_data, specialty)
+                        except Exception as e:
+                            transfer_text = f"Extraction Error: {e}"
+                        st.session_state.boq_transfer_data = transfer_text
                         st.session_state.survey_area = calc_area
                         st.toast(t("تم ترحيل البيانات بنجاح! اذهب لتبويب 'Cost Engine' للبدء في التسعير.", "Data transferred successfully! Go to 'Cost Engine' tab to begin pricing."), icon="✅")
 
