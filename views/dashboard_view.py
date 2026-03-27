@@ -109,36 +109,52 @@ def render_dashboard():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ─── Quick Project Creation ──────────────────────────────────
-    with st.expander(f"➕ {t('إنشاء مشروع جديد سريع', 'Create New Quick Project')}"):
-        with st.form("quick_project_form"):
-            new_p_name = st.text_input(t("اسم المشروع", "Project Name"), placeholder=t("مثلاً: فيلا التجمع الخامس", "e.g. Fifth Settlement Villa"))
-            p_type = st.selectbox(t("نوع المشروع", "Project Type"), options=["BOQ", "Blueprint"])
-            
-            p_submit = st.form_submit_button(t("حفظ المشروع", "Save Project"))
-            if p_submit and new_p_name:
-                db = None
-                try:
-                    db = SessionLocal()
-                    user = db.query(User).filter(User.username == st.session_state.username).first()
-                    if user:
-                        new_project = Project(
-                            owner_id=user.id,
-                            name=new_p_name,
-                            project_type=p_type,
-                            result_data="[]", # Empty JSON list
-                            created_at=datetime.datetime.utcnow()
-                        )
-                        db.add(new_project)
-                        db.commit()
-                        st.success(t(f"✅ تم إنشاء مشروع '{new_p_name}' بنجاح!", f"✅ Project '{new_p_name}' created!"))
-                        st.cache_data.clear()
-                        st.rerun()
-                except Exception as e:
-                    st.error(f"Error: {e}")
-                finally:
-                    if db: db.close()
+    # ─── Quick Actions & UI ──────────────────────────────────────
+    st.markdown(f"### ⚡ {t('إجراءات سريعة', 'Quick Actions')}")
+    qcol1, qcol2, qcol3 = st.columns(3)
     
+    actions = [
+        ("📐", t("تحليل مخطط جديد", "Analyze Blueprint"), "Blueprint Analysis"),
+        ("💰", t("تسعير مقايسة جديدة", "Price New BOQ"), "BOQ Pricing"),
+        ("🏗️", t("استكشاف العطاءات", "Explore Tenders"), "Tender Hub")
+    ]
+    
+    for qcol, (icon, label, target) in zip([qcol1, qcol2, qcol3], actions):
+        with qcol:
+            if st.button(f"{icon} {label}", key=f"btn_{target}", use_container_width=True):
+                st.session_state.page = target
+                st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ─── Usage Stats & Projects ──────────────────────────────────
+    stats = get_user_stats(st.session_state.username)
+    b_count = stats["blueprints"]
+    boq_count = stats["boqs"]
+
+    projects = get_user_projects(st.session_state.username)
+    proj_count = len(projects)
+
+    # KPI Cards
+    col1, col2, col3, col4 = st.columns(4)
+    kpis = [
+        ("📐", t("مخططات محللة", "Blueprints Analyzed"), b_count, "hsl(200, 95%, 60%)", "rgba(14, 165, 233, 0.1)"),
+        ("💰", t("مقايسات مسعرة", "Priced BOQs"), boq_count, "hsl(160, 80%, 50%)", "rgba(16, 185, 129, 0.1)"),
+        ("📁", t("مشاريع محفوظة", "Saved Projects"), proj_count, "hsl(260, 90%, 70%)", "rgba(167, 139, 250, 0.1)"),
+        ("🏆", t("الباقة الحالية", "Current Plan"), st.session_state.plan, "hsl(30, 90%, 60%)", "rgba(251, 146, 60, 0.1)"),
+    ]
+    for col, (icon, label, val, color, bg) in zip([col1, col2, col3, col4], kpis):
+        with col:
+            st.markdown(f"""
+            <div class="glass-card animate-up" style="text-align:center; padding: 1.8rem 1rem;">
+                <div style="background:{bg}; width:50px; height:50px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 15px auto; border:1px solid {color}40;">
+                    <span style="font-size:1.5rem;">{icon}</span>
+                </div>
+                <h2 style="margin:0; color:#f8fafc; font-size:2.2rem; font-weight:900;">{val}</h2>
+                <p style="margin:4px 0 0 0; color:#94a3b8; font-size:0.8rem; font-weight:600; text-transform: uppercase;">{label}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
     st.markdown("<br>", unsafe_allow_html=True)
 
     # ─── Charts & Activity ───────────────────────────────────────

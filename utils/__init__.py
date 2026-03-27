@@ -160,44 +160,47 @@ def get_theme_css():
         background-color: transparent !important;
     }
 
-    /* Glassmorphism Cards V4 */
+    /* Price Indicators */
+    .price-up { color: #10b981; font-weight: bold; font-size: 0.85rem; }
+    .price-down { color: #ef4444; font-weight: bold; font-size: 0.85rem; }
+    .price-stable { color: #94a3b8; font-weight: bold; font-size: 0.85rem; }
+
+    /* New: Action Cards */
+    .action-card {
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(99, 102, 241, 0.05));
+        border: 1px dashed var(--accent-primary);
+        border-radius: 20px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    .action-card:hover {
+        background: rgba(14, 165, 233, 0.15);
+        border-style: solid;
+        transform: scale(1.02);
+    }
+
+    /* Refined Glassmorphism Cards V5 */
     .glass-card {
         background: linear-gradient(145deg, var(--card-bg), rgba(15, 23, 42, 0.7));
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid var(--glass-border);
-        border-top: 1px solid rgba(255,255,255,0.15); /* Top highlight for depth */
-        border-left: 1px solid rgba(255,255,255,0.05); /* Soft left highlight */
+        border-top: 1px solid rgba(255,255,255,0.15);
         border-radius: 28px;
         padding: 2rem;
         margin-bottom: 1.5rem;
         transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.05), var(--shadow-lg);
-        position: relative;
-        overflow: hidden;
+        box-shadow: var(--shadow-lg);
     }
-    
-    .glass-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.03), transparent);
-        transform: translateX(-100%);
-        transition: 0.6s;
-    }
-
-    .glass-card:hover::before {
-        transform: translateX(100%);
-    }
-
     .glass-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
+        transform: translateY(-8px);
         border-color: rgba(56, 189, 248, 0.4);
-        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 30px var(--accent-glow);
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 20px var(--accent-glow);
     }
 
-    /* Premium Buttons V4 */
+    /* Premium Buttons V5 */
     .stButton > button {
         border-radius: 16px !important;
         background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%) !important;
@@ -207,37 +210,19 @@ def get_theme_css():
         padding: 0.75rem 1.5rem !important;
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
         box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3), inset 0 2px 0 rgba(255,255,255,0.2) !important;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        position: relative;
-        overflow: hidden;
     }
-
     .stButton > button:hover {
         transform: translateY(-3px) !important;
-        box-shadow: 0 15px 30px rgba(14, 165, 233, 0.5), inset 0 2px 0 rgba(255,255,255,0.3) !important;
+        box-shadow: 0 15px 30px rgba(14, 165, 233, 0.5) !important;
         filter: brightness(1.2);
     }
-    
-    .stButton > button:active {
-        transform: translateY(1px) !important;
-        box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2) !important;
-    }
 
-    /* Input & Search Styling V4 */
+    /* Input & Search Styling V5 */
     .stTextInput > div > div > input, .stSelectbox > div > div > div, .stTextArea > div > div > textarea {
         background-color: rgba(15, 23, 42, 0.6) !important;
         border: 1px solid rgba(255,255,255,0.1) !important;
         border-radius: 14px !important;
         color: white !important;
-        transition: all 0.3s ease !important;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-    }
-    
-    .stTextInput > div > div > input:focus, .stSelectbox > div > div > div:focus, .stTextArea > div > div > textarea:focus {
-        border-color: var(--accent-primary) !important;
-        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2), inset 0 2px 4px rgba(0,0,0,0.1) !important;
-        background-color: rgba(15, 23, 42, 0.8) !important;
     }
 
     /* AI BRIDGE - Floating Action Button */
@@ -246,32 +231,22 @@ def get_theme_css():
         bottom: 35px;
         right: 35px;
         z-index: 999990 !important;
-        animation: float 5s ease-in-out infinite;
     }
-    
     .floating-ai-bridge button {
         width: 70px !important;
         height: 70px !important;
-        min-width: 70px !important;
         border-radius: 50% !important;
-        padding: 0 !important;
         background: linear-gradient(135deg, #38bdf8, #6366f1) !important;
-        border: 2px solid rgba(255,255,255,0.4) !important;
         box-shadow: 0 10px 30px rgba(14, 165, 233, 0.6) !important;
         font-size: 32px !important;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    }
-    
-    .floating-ai-bridge button:hover {
-        transform: scale(1.1) rotate(5deg) !important;
-        box-shadow: 0 20px 40px rgba(14, 165, 233, 0.8), 0 0 20px rgba(255,255,255,0.4) !important;
-        animation: pulseGlow 1.5s infinite;
     }
 
     /* Mobile Optimization */
     @media (max-width: 768px) {
         .glass-card { padding: 1.5rem; border-radius: 20px; }
-        .ai-bridge { bottom: 20px; right: 20px; width: 60px; height: 60px; }
+        .stButton > button { width: 100% !important; }
     }
     </style>
     """
+
+
